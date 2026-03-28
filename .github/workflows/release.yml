@@ -1,0 +1,71 @@
+name: Build and Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            label: Windows
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            label: Linux
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            label: macOS
+
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.label }})
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - run: npm ci
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Madar ${{ github.ref_name }}'
+          releaseBody: |
+            ## Madar ${{ github.ref_name }}
+
+            Interactive STEM Simulation Browser — 359 simulations across Physics, Chemistry, Biology, Math, Earth Science & Engineering.
+
+            ### Downloads
+            - **Windows**: Download the `.exe` or `.msi` installer below
+            - **macOS**: Download the `.dmg` file below
+            - **Linux**: Download the `.deb` or `.AppImage` below
+            - **Web**: No install needed — [https://hasnain7abbas.github.io/Madar/](https://hasnain7abbas.github.io/Madar/)
+
+            ### What's included
+            - 359 embedded STEM simulations (PhET, myPhysicsLab, oPhysics, GeoGebra, Desmos)
+            - Search, filter by category/source/grade, favorites
+            - Fully responsive — works on desktop and mobile web
+            - Dark theme with Urdu category labels
+          releaseDraft: false
+          prerelease: false
