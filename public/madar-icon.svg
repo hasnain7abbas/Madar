@@ -1,19 +1,26 @@
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+<svg width="680" height="400" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="o1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#534AB7"/><stop offset="100%" stop-color="#1D9E75"/></linearGradient>
-    <linearGradient id="o2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1D9E75"/><stop offset="100%" stop-color="#378ADD"/></linearGradient>
-    <linearGradient id="o3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#378ADD"/><stop offset="100%" stop-color="#534AB7"/></linearGradient>
-    <linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27"/><stop offset="100%" stop-color="#E24B4A"/></linearGradient>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27" stop-opacity="0.3"/><stop offset="100%" stop-color="#E24B4A" stop-opacity="0"/></linearGradient>
+    <linearGradient id="orb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#534AB7"/><stop offset="100%" stop-color="#1D9E75"/></linearGradient>
+    <linearGradient id="orb2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1D9E75"/><stop offset="100%" stop-color="#378ADD"/></linearGradient>
+    <linearGradient id="orb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#378ADD"/><stop offset="100%" stop-color="#534AB7"/></linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27"/><stop offset="100%" stop-color="#E24B4A"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27" stop-opacity="0.3"/><stop offset="100%" stop-color="#E24B4A" stop-opacity="0"/></linearGradient>
   </defs>
-  <rect width="128" height="128" rx="24" fill="#1a1a2e"/>
-  <circle cx="64" cy="64" r="22" fill="url(#g)"/>
-  <ellipse cx="64" cy="64" rx="46" ry="20" fill="none" stroke="url(#o1)" stroke-width="1.5" opacity="0.6" transform="rotate(-20 64 64)"/>
-  <ellipse cx="64" cy="64" rx="46" ry="20" fill="none" stroke="url(#o2)" stroke-width="1.5" opacity="0.6" transform="rotate(40 64 64)"/>
-  <ellipse cx="64" cy="64" rx="46" ry="20" fill="none" stroke="url(#o3)" stroke-width="1.5" opacity="0.6" transform="rotate(100 64 64)"/>
-  <circle cx="64" cy="64" r="10" fill="url(#c)"/>
-  <circle cx="61" cy="61" r="3" fill="white" opacity="0.2"/>
-  <circle cx="21" cy="51" r="3.5" fill="#7F77DD"/>
-  <circle cx="101" cy="45" r="2.8" fill="#1D9E75"/>
-  <circle cx="42" cy="88" r="3" fill="#378ADD"/>
+  <circle cx="340" cy="180" r="60" fill="url(#glow)"/>
+  <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb1)" stroke-width="1.2" opacity="0.5" transform="rotate(-20 340 180)"/>
+  <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb2)" stroke-width="1.2" opacity="0.5" transform="rotate(40 340 180)"/>
+  <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb3)" stroke-width="1.2" opacity="0.5" transform="rotate(100 340 180)"/>
+  <circle cx="340" cy="180" r="28" fill="url(#core)"/>
+  <circle cx="332" cy="172" r="8" fill="white" opacity="0.2"/>
+  <circle cx="218" cy="145" r="7" fill="#7F77DD"/><circle cx="216" cy="143" r="2" fill="white" opacity="0.35"/>
+  <circle cx="445" cy="130" r="5.5" fill="#1D9E75"/><circle cx="443.5" cy="128.5" r="1.5" fill="white" opacity="0.35"/>
+  <circle cx="280" cy="245" r="6" fill="#378ADD"/><circle cx="278.5" cy="243.5" r="1.8" fill="white" opacity="0.35"/>
+  <circle cx="470" cy="195" r="3" fill="#534AB7" opacity="0.5"/>
+  <circle cx="205" cy="200" r="2.5" fill="#1D9E75" opacity="0.4"/>
+  <circle cx="400" cy="250" r="2" fill="#378ADD" opacity="0.35"/>
+  <circle cx="310" cy="110" r="2.5" fill="#7F77DD" opacity="0.4"/>
+  <circle cx="390" cy="100" r="1.8" fill="#EF9F27" opacity="0.3"/>
+  <text x="340" y="310" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="42" font-weight="500" letter-spacing="10" fill="#2C2C2A">MADAR</text>
+  <text x="340" y="345" text-anchor="middle" font-family="'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif" font-size="18" fill="#888780" opacity="0.7">مدار</text>
+  <text x="340" y="375" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="400" letter-spacing="3" fill="#888780">INTERACTIVE STEM PHYSICS</text>
 </svg>

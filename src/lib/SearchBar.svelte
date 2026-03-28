@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -86,7 +86,7 @@
     border: none;
     outline: none;
     color: var(--color-text);
-    font-size: 15px;
+    font-size: 16px;
     font-family: var(--font-sans);
     min-width: 0;
   }

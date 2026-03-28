@@ -37,38 +37,34 @@
 </script>
 
 <aside class="sidebar">
-  <!-- Header with SVG Logo -->
+  <!-- Header with full SVG Logo -->
   <div class="sidebar-header">
-    <div class="logo-area">
-      <svg class="logo-svg" width="56" height="56" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="orb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#534AB7"/><stop offset="100%" stop-color="#1D9E75"/></linearGradient>
-          <linearGradient id="orb2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1D9E75"/><stop offset="100%" stop-color="#378ADD"/></linearGradient>
-          <linearGradient id="orb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#378ADD"/><stop offset="100%" stop-color="#534AB7"/></linearGradient>
-          <linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27"/><stop offset="100%" stop-color="#E24B4A"/></linearGradient>
-          <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27" stop-opacity="0.3"/><stop offset="100%" stop-color="#E24B4A" stop-opacity="0"/></linearGradient>
-        </defs>
-        <circle cx="340" cy="180" r="60" fill="url(#glow)"/>
-        <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb1)" stroke-width="1.2" opacity="0.5" transform="rotate(-20 340 180)"/>
-        <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb2)" stroke-width="1.2" opacity="0.5" transform="rotate(40 340 180)"/>
-        <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb3)" stroke-width="1.2" opacity="0.5" transform="rotate(100 340 180)"/>
-        <circle cx="340" cy="180" r="28" fill="url(#core)"/>
-        <circle cx="332" cy="172" r="8" fill="white" opacity="0.2"/>
-        <circle cx="218" cy="145" r="7" fill="#7F77DD"/><circle cx="216" cy="143" r="2" fill="white" opacity="0.35"/>
-        <circle cx="445" cy="130" r="5.5" fill="#1D9E75"/><circle cx="443.5" cy="128.5" r="1.5" fill="white" opacity="0.35"/>
-        <circle cx="280" cy="245" r="6" fill="#378ADD"/><circle cx="278.5" cy="243.5" r="1.8" fill="white" opacity="0.35"/>
-        <circle cx="470" cy="195" r="3" fill="#534AB7" opacity="0.5"/>
-        <circle cx="205" cy="200" r="2.5" fill="#1D9E75" opacity="0.4"/>
-        <circle cx="400" cy="250" r="2" fill="#378ADD" opacity="0.35"/>
-        <circle cx="310" cy="110" r="2.5" fill="#7F77DD" opacity="0.4"/>
-        <circle cx="390" cy="100" r="1.8" fill="#EF9F27" opacity="0.3"/>
-      </svg>
-    </div>
-    <h1 class="title">
-      <span class="title-en">MADAR</span>
-      <span class="title-ur">مدار</span>
-    </h1>
-    <p class="subtitle">Interactive STEM Physics</p>
+    <svg class="logo-svg" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="orb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#534AB7"/><stop offset="100%" stop-color="#1D9E75"/></linearGradient>
+        <linearGradient id="orb2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1D9E75"/><stop offset="100%" stop-color="#378ADD"/></linearGradient>
+        <linearGradient id="orb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#378ADD"/><stop offset="100%" stop-color="#534AB7"/></linearGradient>
+        <linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27"/><stop offset="100%" stop-color="#E24B4A"/></linearGradient>
+        <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EF9F27" stop-opacity="0.3"/><stop offset="100%" stop-color="#E24B4A" stop-opacity="0"/></linearGradient>
+      </defs>
+      <circle cx="340" cy="180" r="60" fill="url(#glow)"/>
+      <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb1)" stroke-width="1.2" opacity="0.5" transform="rotate(-20 340 180)"/>
+      <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb2)" stroke-width="1.2" opacity="0.5" transform="rotate(40 340 180)"/>
+      <ellipse cx="340" cy="180" rx="130" ry="55" fill="none" stroke="url(#orb3)" stroke-width="1.2" opacity="0.5" transform="rotate(100 340 180)"/>
+      <circle cx="340" cy="180" r="28" fill="url(#core)"/>
+      <circle cx="332" cy="172" r="8" fill="white" opacity="0.2"/>
+      <circle cx="218" cy="145" r="7" fill="#7F77DD"/><circle cx="216" cy="143" r="2" fill="white" opacity="0.35"/>
+      <circle cx="445" cy="130" r="5.5" fill="#1D9E75"/><circle cx="443.5" cy="128.5" r="1.5" fill="white" opacity="0.35"/>
+      <circle cx="280" cy="245" r="6" fill="#378ADD"/><circle cx="278.5" cy="243.5" r="1.8" fill="white" opacity="0.35"/>
+      <circle cx="470" cy="195" r="3" fill="#534AB7" opacity="0.5"/>
+      <circle cx="205" cy="200" r="2.5" fill="#1D9E75" opacity="0.4"/>
+      <circle cx="400" cy="250" r="2" fill="#378ADD" opacity="0.35"/>
+      <circle cx="310" cy="110" r="2.5" fill="#7F77DD" opacity="0.4"/>
+      <circle cx="390" cy="100" r="1.8" fill="#EF9F27" opacity="0.3"/>
+      <text x="340" y="310" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="42" font-weight="500" letter-spacing="10" fill="#e8e8e8">MADAR</text>
+      <text x="340" y="345" text-anchor="middle" font-family="'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif" font-size="18" fill="#a0a0b0" opacity="0.7">مدار</text>
+      <text x="340" y="375" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" font-weight="400" letter-spacing="3" fill="#a0a0b0">INTERACTIVE STEM PHYSICS</text>
+    </svg>
   </div>
 
   <div class="sidebar-scroll">
@@ -184,51 +180,16 @@
   }
 
   .sidebar-header {
-    padding: 18px 16px 14px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--color-border);
     text-align: center;
   }
 
-  .logo-area {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 6px;
-  }
-
   .logo-svg {
-    filter: drop-shadow(0 2px 8px rgba(239, 159, 39, 0.2));
-  }
-
-  .title {
-    display: flex;
-    align-items: baseline;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 3px;
-  }
-
-  .title-en {
-    font-size: 24px;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-red));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 4px;
-  }
-
-  .title-ur {
-    font-family: var(--font-urdu);
-    font-size: 22px;
-    color: var(--color-accent-orange);
-    direction: rtl;
-  }
-
-  .subtitle {
-    font-size: 12px;
-    color: var(--color-text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    filter: drop-shadow(0 2px 10px rgba(239, 159, 39, 0.15));
   }
 
   .sidebar-scroll {

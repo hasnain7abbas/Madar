@@ -289,33 +289,33 @@
   }
 
   .main-header {
-    padding: 16px 20px 0;
+    padding: 20px 24px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     flex-shrink: 0;
   }
 
   .filter-info {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     padding: 0 2px;
   }
 
   .filter-label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--color-accent-purple);
   }
 
   .filter-count {
-    font-size: 14px;
+    font-size: 16px;
     color: var(--color-text-dim);
   }
 
   .clear-filters {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--color-text-muted);
     cursor: pointer;
     background: none;
@@ -334,13 +334,13 @@
   .sim-grid-container {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 20px 20px;
+    padding: 20px 24px 24px;
   }
 
   .sim-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
   }
 
   /* Empty state */
@@ -354,19 +354,19 @@
   }
 
   .empty-emoji {
-    font-size: 48px;
+    font-size: 56px;
     margin-bottom: 16px;
   }
 
   .empty-state h3 {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: 8px;
   }
 
   .empty-state p {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--color-text-dim);
   }
 </style>
