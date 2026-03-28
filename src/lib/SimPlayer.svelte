@@ -314,10 +314,40 @@
     box-shadow: 0 4px 12px rgba(83, 74, 183, 0.4);
   }
 
-  /* Hide scrollbar for back label on smaller screens */
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
+    .player-bar {
+      padding: 6px 8px;
+      gap: 6px;
+    }
+
     .back-label,
     .open-label {
+      display: none;
+    }
+
+    .bar-btn {
+      padding: 8px;
+    }
+
+    .sim-name {
+      font-size: 13px;
+    }
+
+    .sim-source {
+      display: none;
+    }
+
+    .bar-center {
+      gap: 6px;
+    }
+
+    .sim-emoji {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .bar-center {
       display: none;
     }
   }

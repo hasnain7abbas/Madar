@@ -10,6 +10,7 @@
     onSourceChange,
     onGradeChange,
     onShowFavorites,
+    onClose = () => {},
   } = $props<{
     selectedCategory: string | null;
     selectedSource: string | null;
@@ -19,13 +20,10 @@
     onSourceChange: (source: string | null) => void;
     onGradeChange: (grade: string | null) => void;
     onShowFavorites: () => void;
+    onClose?: () => void;
   }>();
 
   const grades = ["Middle School", "High School", "College"];
-
-  function handleCategoryClick(key: string | null) {
-    onCategoryChange(key);
-  }
 
   function handleSourceClick(source: string | null) {
     onSourceChange(source === selectedSource ? null : source);
@@ -37,6 +35,14 @@
 </script>
 
 <aside class="sidebar">
+  <!-- Close button (mobile only) -->
+  <button class="close-btn" onclick={onClose} aria-label="Close menu">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
   <!-- Header with full SVG Logo -->
   <div class="sidebar-header">
     <svg class="logo-svg" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +74,6 @@
   </div>
 
   <div class="sidebar-scroll">
-    <!-- All button -->
     <section class="section">
       <button
         class="category-btn"
@@ -83,7 +88,6 @@
       </button>
     </section>
 
-    <!-- Categories -->
     <section class="section">
       <h2 class="section-title">Categories</h2>
       <div class="category-list">
@@ -91,7 +95,7 @@
           <button
             class="category-btn"
             class:active={selectedCategory === cat.id}
-            onclick={() => handleCategoryClick(selectedCategory === cat.id ? null : cat.id)}
+            onclick={() => onCategoryChange(selectedCategory === cat.id ? null : cat.id)}
           >
             <span class="cat-emoji">{cat.emoji}</span>
             <span class="cat-label">
@@ -103,39 +107,28 @@
       </div>
     </section>
 
-    <!-- Sources -->
     <section class="section">
       <h2 class="section-title">Sources</h2>
       <div class="pill-group">
         {#each SOURCES as source}
-          <button
-            class="pill"
-            class:active={selectedSource === source}
-            onclick={() => handleSourceClick(source)}
-          >
+          <button class="pill" class:active={selectedSource === source} onclick={() => handleSourceClick(source)}>
             {source}
           </button>
         {/each}
       </div>
     </section>
 
-    <!-- Grade Level -->
     <section class="section">
       <h2 class="section-title">Grade Level</h2>
       <div class="pill-group">
         {#each grades as grade}
-          <button
-            class="pill"
-            class:active={selectedGrade === grade}
-            onclick={() => handleGradeClick(grade)}
-          >
+          <button class="pill" class:active={selectedGrade === grade} onclick={() => handleGradeClick(grade)}>
             {grade}
           </button>
         {/each}
       </div>
     </section>
 
-    <!-- Favorites -->
     <section class="section favorites-section">
       <button class="favorites-btn" onclick={onShowFavorites}>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="var(--color-accent-red)" stroke="none">
@@ -147,15 +140,8 @@
         {/if}
       </button>
     </section>
-
-    <!-- Keyboard shortcuts hint -->
-    <div class="shortcuts-hint">
-      <span>/</span> search &nbsp;
-      <span>Esc</span> back
-    </div>
   </div>
 
-  <!-- Developer attribution -->
   <div class="sidebar-footer">
     <div class="attribution">
       <span class="made-by">Made with &#10084; in Skardu, Pakistan</span>
@@ -177,7 +163,28 @@
     flex-direction: column;
     overflow: hidden;
     user-select: none;
+    position: relative;
   }
+
+  .close-btn {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--color-text-dim);
+    background: var(--color-surface-hover);
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .close-btn:hover { background: var(--color-surface-active); }
 
   .sidebar-header {
     padding: 10px 12px;
@@ -196,9 +203,9 @@
     flex: 1;
     overflow-y: auto;
     padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Section */
   .section {
     padding: 10px 12px;
     border-bottom: 1px solid rgba(42, 42, 69, 0.3);
@@ -213,7 +220,6 @@
     margin-bottom: 8px;
   }
 
-  /* Categories */
   .category-list {
     display: flex;
     flex-direction: column;
@@ -225,9 +231,9 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    padding: 7px 10px;
+    padding: 9px 10px;
     background: transparent;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
     border: 1px solid transparent;
     transition: all 0.15s ease;
     text-align: left;
@@ -237,80 +243,34 @@
     font-size: inherit;
   }
 
-  .category-btn:hover {
-    background: var(--color-surface-hover);
-  }
+  .category-btn:hover { background: var(--color-surface-hover); }
+  .category-btn.active { background: rgba(83, 74, 183, 0.15); border-color: var(--color-accent-purple); }
 
-  .category-btn.active {
-    background: rgba(83, 74, 183, 0.15);
-    border-color: var(--color-accent-purple);
-  }
+  .cat-emoji { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
 
-  .cat-emoji {
-    font-size: 18px;
-    flex-shrink: 0;
-    width: 24px;
-    text-align: center;
-  }
+  .cat-label { display: flex; flex-direction: column; min-width: 0; }
+  .cat-en { font-size: 15px; font-weight: 500; color: var(--color-text); line-height: 1.3; }
+  .cat-ur { font-family: var(--font-urdu); font-size: 14px; color: var(--color-text-dim); direction: rtl; text-align: left; line-height: 1.4; }
 
-  .cat-label {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    min-width: 0;
-  }
-
-  .cat-en {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-text);
-    line-height: 1.3;
-  }
-
-  .cat-ur {
-    font-family: var(--font-urdu);
-    font-size: 14px;
-    color: var(--color-text-dim);
-    direction: rtl;
-    text-align: left;
-    line-height: 1.4;
-  }
-
-  /* Pills (source / grade) */
-  .pill-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
+  .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
 
   .pill {
-    padding: 5px 12px;
+    padding: 6px 14px;
     font-size: 13px;
     font-weight: 500;
     color: var(--color-text-dim);
     background: var(--color-bg);
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid transparent;
     transition: all 0.15s ease;
     cursor: pointer;
     font-family: inherit;
   }
 
-  .pill:hover {
-    color: var(--color-text);
-    background: var(--color-surface-hover);
-  }
+  .pill:hover { color: var(--color-text); background: var(--color-surface-hover); }
+  .pill.active { color: white; background: var(--color-accent-purple); border-color: var(--color-accent-purple); }
 
-  .pill.active {
-    color: white;
-    background: var(--color-accent-purple);
-    border-color: var(--color-accent-purple);
-  }
-
-  /* Favorites */
-  .favorites-section {
-    border-bottom: none;
-  }
+  .favorites-section { border-bottom: none; }
 
   .favorites-btn {
     display: flex;
@@ -319,9 +279,9 @@
     width: 100%;
     padding: 10px 12px;
     background: var(--color-bg);
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
     border: 1px solid var(--color-border);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--color-text);
     cursor: pointer;
@@ -329,42 +289,18 @@
     font-family: inherit;
   }
 
-  .favorites-btn:hover {
-    background: var(--color-surface-hover);
-    border-color: var(--color-accent-red);
-  }
+  .favorites-btn:hover { background: var(--color-surface-hover); border-color: var(--color-accent-red); }
 
   .fav-count {
     margin-left: auto;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--color-accent-red);
     background: rgba(226, 75, 74, 0.15);
-    padding: 1px 7px;
+    padding: 2px 8px;
     border-radius: 8px;
   }
 
-  /* Shortcuts hint */
-  .shortcuts-hint {
-    padding: 10px 16px;
-    font-size: 10px;
-    color: var(--color-text-muted);
-    text-align: center;
-    line-height: 1.8;
-  }
-
-  .shortcuts-hint span {
-    display: inline-block;
-    padding: 2px 6px;
-    background: var(--color-bg);
-    border-radius: 3px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-text-dim);
-    border: 1px solid var(--color-border);
-  }
-
-  /* Developer Attribution Footer */
   .sidebar-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--color-border);
@@ -372,16 +308,8 @@
     flex-shrink: 0;
   }
 
-  .attribution {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .made-by {
-    font-size: 12px;
-    color: var(--color-text-dim);
-  }
+  .attribution { display: flex; flex-direction: column; gap: 2px; }
+  .made-by { font-size: 12px; color: var(--color-text-dim); }
 
   .dev-link {
     font-size: 13px;
@@ -391,8 +319,31 @@
     transition: color 0.15s ease;
   }
 
-  .dev-link:hover {
-    color: var(--color-accent-red);
-    text-decoration: underline;
+  .dev-link:hover { color: var(--color-accent-red); text-decoration: underline; }
+
+  /* ====== MOBILE ====== */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      min-width: 100%;
+    }
+
+    .close-btn {
+      display: flex;
+    }
+
+    .category-btn {
+      padding: 12px 12px;
+    }
+
+    .pill {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    .favorites-btn {
+      padding: 12px 14px;
+      font-size: 16px;
+    }
   }
 </style>

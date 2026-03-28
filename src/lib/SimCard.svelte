@@ -125,4 +125,41 @@
     background: rgba(83, 74, 183, 0.15);
     color: var(--color-accent-purple);
   }
+
+  @media (max-width: 768px) {
+    .sim-card {
+      padding: 16px 10px 12px;
+      gap: 6px;
+    }
+
+    .sim-card:hover {
+      transform: none;
+    }
+
+    .sim-card:active {
+      background: var(--color-surface-hover);
+      transform: scale(0.97);
+    }
+
+    .fav-btn {
+      opacity: 1;
+      top: 6px;
+      right: 6px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .card-emoji {
+      font-size: 36px;
+    }
+
+    .card-name {
+      font-size: 14px;
+    }
+
+    .card-source {
+      font-size: 11px;
+      padding: 2px 8px;
+    }
+  }
 </style>
