@@ -4,6 +4,7 @@
   import SearchBar from "./lib/SearchBar.svelte";
   import SimCard from "./lib/SimCard.svelte";
   import SimPlayer from "./lib/SimPlayer.svelte";
+  import TutorialModal from "./lib/TutorialModal.svelte";
   import { simulations as SIMULATIONS, type Simulation } from "./lib/simulations";
   import type { ViewMode } from "./lib/types";
 
@@ -140,6 +141,8 @@
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
+
+<TutorialModal />
 
 {#if viewMode === "playing" && selectedSim}
   <div class="player-view">

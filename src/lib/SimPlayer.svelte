@@ -113,26 +113,14 @@
   }
 
   .player-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    background: rgba(15, 15, 26, 0.88);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(42, 42, 69, 0.5);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
     gap: 12px;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-
-  .player-container:hover .player-bar,
-  .player-bar:focus-within {
-    opacity: 1;
+    flex-shrink: 0;
   }
 
   .bar-btn {
@@ -221,8 +209,7 @@
 
   /* Loading */
   .loading-overlay {
-    position: absolute;
-    inset: 0;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
