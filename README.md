@@ -8,7 +8,7 @@
 
 A fast, lightweight STEM simulation browser with **429 embedded simulations** across Physics, Chemistry, Biology, Mathematics, Earth Science & Engineering — all in one app.
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
+[![All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](#license)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%20v2-orange.svg)](https://tauri.app)
 [![Svelte 5](https://img.shields.io/badge/frontend-Svelte%205-red.svg)](https://svelte.dev)
 [![Made in Skardu](https://img.shields.io/badge/made%20in-Skardu,%20Pakistan%20🇵🇰-green.svg)](#about)
@@ -49,7 +49,7 @@ A fast, lightweight STEM simulation browser with **429 embedded simulations** ac
 - **Lightweight** — under 55KB gzipped, runs on low-end hardware
 - **Dark theme** with the Madar orbital design language
 - **Urdu category labels** — مدار is built for Pakistani students
-- **Open source** — MIT licensed, free forever
+- **Proprietary** — All rights reserved by Hasnain Abbas
 
 ## Who Is Madar For?
 
@@ -171,7 +171,7 @@ If Madar helped you learn something, pass an exam, or just made you smile — co
 
 ## License
 
-[MIT](./LICENSE) — You can download, use, modify, share, and even sell this software. The only requirement is keeping the original copyright notice.
+[All Rights Reserved](./LICENSE) — This software is the exclusive property of Hasnain Abbas. No use, copying, modification, or distribution is permitted without prior written permission. Contact hsnanrzee1160@gmail.com for licensing inquiries.
 
 ---
 
