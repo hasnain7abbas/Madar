@@ -3,16 +3,12 @@
   let activeVideo: "howto" | "install" | null = $state(null);
 
   $effect(() => {
-    const seen = localStorage.getItem("madar-tutorial-seen");
-    if (!seen) {
-      visible = true;
-    }
+    visible = true;
   });
 
   function dismiss() {
     visible = false;
     activeVideo = null;
-    localStorage.setItem("madar-tutorial-seen", "1");
   }
 
   function playVideo(type: "howto" | "install") {
