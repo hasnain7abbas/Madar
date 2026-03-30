@@ -67,7 +67,7 @@
 
         <div class="welcome-icon">🔬</div>
         <h2 class="welcome-title">Welcome to Madar!</h2>
-        <p class="welcome-desc">390+ interactive STEM simulations in one place. Want a quick tour?</p>
+        <p class="welcome-desc">360+ interactive STEM simulations in one place. Want a quick tour?</p>
 
         <div class="btn-group">
           <button class="tutorial-btn primary" onclick={() => playVideo("howto")}>
