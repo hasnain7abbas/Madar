@@ -6,7 +6,7 @@
 
 **مدار — Interactive STEM Physics**
 
-A fast, lightweight STEM simulation browser with **359 embedded simulations** across Physics, Chemistry, Biology, Mathematics, Earth Science & Engineering — all in one app.
+A fast, lightweight STEM simulation browser with **429 embedded simulations** across Physics, Chemistry, Biology, Mathematics, Earth Science & Engineering — all in one app.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%20v2-orange.svg)](https://tauri.app)
@@ -38,7 +38,7 @@ A fast, lightweight STEM simulation browser with **359 embedded simulations** ac
 
 ## Features
 
-- **359 interactive simulations** from PhET, myPhysicsLab, oPhysics, GeoGebra, Desmos & more
+- **429 interactive simulations** from PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos & more
 - **6 subject categories**: Physics (81), Chemistry (104), Biology (102), Math (43), Earth Science (17), Engineering (12)
 - **Play simulations inside the app** — no need to open a browser
 - **Search & filter** by category, source, grade level, or keywords
@@ -91,18 +91,21 @@ Find your installer at: `src-tauri/target/release/bundle/`
 | Frontend | Svelte 5, TypeScript, Vite |
 | Desktop | Tauri v2 (Rust) |
 | Hosting | GitHub Pages |
-| Simulations | PhET, myPhysicsLab, oPhysics, GeoGebra, Desmos |
+| Simulations | PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos |
 
 ## Simulation Sources
 
 | Source | Count | Description |
 |--------|-------|-------------|
 | **PhET** | 163 | University of Colorado's interactive HTML5 simulations |
+| **Falstad** | 38 | Paul Falstad's HTML5 physics & math applets (GPL-2.0) |
+| **Chrome Music Lab** | 13 | Google's interactive music/sound experiments (Apache 2.0) |
+| **Nicky Case** | 7 | Game-like explorable explanations (CC0 / Public Domain) |
 | **myPhysicsLab** | 12 | Real-time physics simulations with configurable parameters |
 | **oPhysics** | 11 | Clean interactive physics visualizations |
 | **GeoGebra** | 6 | Dynamic math tools — graphing, geometry, 3D, CAS |
 | **Desmos** | 3 | Beautiful graphing and scientific calculators |
-| **Other** | 7+ | MolView, ChemCollective, learn.genetics.utah.edu, NASA, 3Dmol |
+| **Other** | 10+ | Stellarium Web, Ray Optics, Mathigon Polypad, MolView & more |
 
 ## Project Structure
 
@@ -115,7 +118,7 @@ madar/
 │   │   ├── SimCard.svelte        # Simulation card component
 │   │   ├── SimPlayer.svelte      # Embedded iframe player
 │   │   ├── SearchBar.svelte      # Search input
-│   │   ├── simulations.ts        # 359 simulation entries
+│   │   ├── simulations.ts        # 429 simulation entries
 │   │   └── types.ts              # TypeScript types
 │   └── app.css                   # Global styles & dark theme
 ├── src-tauri/                    # Tauri/Rust backend (desktop)
@@ -126,7 +129,7 @@ madar/
 
 ## Roadmap
 
-- [x] 359 embedded STEM simulations
+- [x] 429 embedded STEM simulations
 - [x] Search, filter, and favorites
 - [x] Responsive mobile layout with drawer navigation
 - [x] Desktop app via Tauri v2

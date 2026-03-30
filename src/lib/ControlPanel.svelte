@@ -29,6 +29,12 @@
     onSourceChange(source === selectedSource ? null : source);
   }
 
+  const sourceLabels: Record<string, string> = {
+    "Falstad": "⚡ Falstad",
+    "Nicky Case": "🎮 Nicky Case",
+    "Chrome Music Lab": "🎵 Music Lab",
+  };
+
   function handleGradeClick(grade: string | null) {
     onGradeChange(grade === selectedGrade ? null : grade);
   }
@@ -112,7 +118,7 @@
       <div class="pill-group">
         {#each SOURCES as source}
           <button class="pill" class:active={selectedSource === source} onclick={() => handleSourceClick(source)}>
-            {source}
+            {sourceLabels[source] ?? source}
           </button>
         {/each}
       </div>

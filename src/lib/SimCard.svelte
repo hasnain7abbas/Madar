@@ -4,14 +4,32 @@
   let {
     simulation,
     isFavorite,
+    index = 0,
     onClick,
     onToggleFavorite,
   } = $props<{
     simulation: Simulation;
     isFavorite: boolean;
+    index?: number;
     onClick: () => void;
     onToggleFavorite: () => void;
   }>();
+
+  const catColors: Record<string, string> = {
+    physics: "#378add",
+    chemistry: "#1d9e75",
+    biology: "#534ab7",
+    math: "#ef9f27",
+    "earth-science": "#2dd681",
+    engineering: "#e24b4a",
+  };
+
+  let catColor = $derived(catColors[simulation.category] || "#534ab7");
+  let shortDesc = $derived(
+    simulation.description.length > 60
+      ? simulation.description.slice(0, 60) + "…"
+      : simulation.description
+  );
 
   function handleFavoriteClick(e: MouseEvent) {
     e.stopPropagation();
@@ -19,7 +37,7 @@
   }
 </script>
 
-<div class="sim-card" role="button" tabindex="0" onclick={onClick} onkeydown={(e) => e.key === 'Enter' && onClick()}>
+<div class="sim-card" role="button" tabindex="0" onclick={onClick} onkeydown={(e) => e.key === 'Enter' && onClick()} style="--cat-color: {catColor}; --i: {Math.min(index, 20)}">
   <div class="card-shine"></div>
   <button
     class="fav-btn"
@@ -35,6 +53,7 @@
   <div class="card-emoji">{simulation.thumbnailEmoji}</div>
   <h3 class="card-name">{simulation.name}</h3>
   <span class="card-source">{simulation.source}</span>
+  <span class="card-desc">{shortDesc}</span>
 </div>
 
 <style>
@@ -47,6 +66,7 @@
     padding: 22px 14px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
+    border-top: 3px solid var(--cat-color);
     border-radius: 14px;
     cursor: pointer;
     text-align: center;
@@ -58,6 +78,13 @@
     width: 100%;
     gap: 8px;
     overflow: hidden;
+    animation: cardIn 0.3s ease both;
+    animation-delay: calc(var(--i) * 30ms);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   /* Subtle shine overlay on hover */
@@ -170,6 +197,27 @@
     color: white;
   }
 
+  .card-desc {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 12px;
+    background: linear-gradient(transparent, var(--color-surface) 30%);
+    font-size: 12px;
+    color: var(--color-text-dim);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .sim-card:hover .card-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* ====== MOBILE ====== */
   @media (max-width: 768px) {
     .sim-card {
@@ -196,6 +244,10 @@
     .sim-card:hover .card-source {
       background: rgba(83, 74, 183, 0.15);
       color: var(--color-accent-purple);
+    }
+
+    .card-desc {
+      display: none;
     }
 
     .fav-btn {

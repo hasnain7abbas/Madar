@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
   import ControlPanel from "./lib/ControlPanel.svelte";
+  import HeroSection from "./lib/HeroSection.svelte";
   import SearchBar from "./lib/SearchBar.svelte";
   import SimCard from "./lib/SimCard.svelte";
   import SimPlayer from "./lib/SimPlayer.svelte";
@@ -254,6 +255,13 @@
       </div>
 
       <div class="sim-grid-container">
+        {#if !searchQuery && !selectedCategory && !selectedSource && !selectedGrade && !showFavoritesOnly}
+          <HeroSection
+            {selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
+        {/if}
+
         {#if filteredSims.length === 0}
           <div class="empty-state">
             <span class="empty-emoji">🔍</span>
@@ -262,10 +270,11 @@
           </div>
         {:else}
           <div class="sim-grid">
-            {#each filteredSims as sim (sim.id)}
+            {#each filteredSims as sim, i (sim.id)}
               <SimCard
                 simulation={sim}
                 isFavorite={favorites.has(sim.id)}
+                index={i}
                 onClick={() => selectSim(sim)}
                 onToggleFavorite={() => toggleFavorite(sim.id)}
               />
@@ -446,7 +455,7 @@
 
   .sim-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 14px;
     animation: gridFadeIn 0.35s ease;
   }
@@ -465,7 +474,16 @@
     text-align: center;
   }
 
-  .empty-emoji { font-size: 56px; margin-bottom: 16px; }
+  .empty-emoji {
+    font-size: 56px;
+    margin-bottom: 16px;
+    animation: emptyBounce 2s ease-in-out infinite;
+  }
+
+  @keyframes emptyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
   .empty-state h3 { font-size: 20px; font-weight: 600; color: var(--color-text); margin-bottom: 8px; }
   .empty-state p { font-size: 15px; color: var(--color-text-dim); }
 

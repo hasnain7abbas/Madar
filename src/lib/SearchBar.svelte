@@ -71,8 +71,12 @@
   }
 
   .search-bar:focus-within {
-    border-color: var(--color-accent-purple);
-    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.15), 0 4px 16px rgba(83, 74, 183, 0.1);
+    border-color: transparent;
+    background-image: linear-gradient(var(--color-surface), var(--color-surface)),
+                      linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-teal), var(--color-accent-orange));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.1);
     transform: translateY(-1px);
   }
 

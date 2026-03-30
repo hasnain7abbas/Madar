@@ -47,9 +47,9 @@
 :root.light {
   --color-bg: #f0f2f5;
   --color-surface: #ffffff;
-  --color-surface-hover: #f5f3ff;
+  --color-surface-hover: #f0edff;
   --color-surface-active: #ede9fe;
-  --color-border: #e0dff0;
+  --color-border: #e2e0f0;
   --color-text: #1a1a2e;
   --color-text-dim: #555570;
   --color-text-muted: #8888a0;
@@ -61,7 +61,7 @@
   --color-success: #22b56e;
   --color-warning: #d6a310;
   --color-danger: #d63d3c;
-  --card-glow: rgba(99, 88, 212, 0.06);
+  --card-glow: rgba(99, 88, 212, 0.08);
   --backdrop-blur: rgba(0, 0, 0, 0.25);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -161,6 +161,11 @@ html, html * {
 }
 :root.light * {
   scrollbar-color: #c8c8d8 var(--color-bg);
+}
+
+/* Light mode card base shadow */
+:root.light .sim-card {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 /* === Smooth view transitions === */
