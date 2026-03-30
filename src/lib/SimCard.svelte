@@ -20,6 +20,7 @@
 </script>
 
 <div class="sim-card" role="button" tabindex="0" onclick={onClick} onkeydown={(e) => e.key === 'Enter' && onClick()}>
+  <div class="card-shine"></div>
   <button
     class="fav-btn"
     class:favorited={isFavorite}
@@ -46,24 +47,44 @@
     padding: 22px 14px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
     user-select: none;
     width: 100%;
     gap: 8px;
+    overflow: hidden;
+  }
+
+  /* Subtle shine overlay on hover */
+  .card-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, var(--card-glow, rgba(83,74,183,0.08)) 50%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .sim-card:hover .card-shine {
+    opacity: 1;
   }
 
   .sim-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(83, 74, 183, 0.18), 0 4px 12px rgba(0, 0, 0, 0.15);
     border-color: var(--color-accent-purple);
     background: var(--color-surface-hover);
   }
 
   .sim-card:active {
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.0);
+    transition-duration: 0.1s;
   }
 
   .fav-btn {
@@ -80,9 +101,9 @@
     background: none;
     border: none;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     opacity: 0;
-    z-index: 1;
+    z-index: 2;
   }
 
   .sim-card:hover .fav-btn,
@@ -93,6 +114,12 @@
   .fav-btn:hover {
     background: rgba(226, 75, 74, 0.15);
     color: var(--color-accent-red);
+    transform: scale(1.2);
+  }
+
+  .fav-btn:active {
+    transform: scale(0.85);
+    transition-duration: 0.08s;
   }
 
   .fav-btn.favorited {
@@ -102,6 +129,13 @@
   .card-emoji {
     font-size: 48px;
     line-height: 1;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .sim-card:hover .card-emoji {
+    transform: scale(1.15) rotate(-3deg);
   }
 
   .card-name {
@@ -115,6 +149,8 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    position: relative;
+    z-index: 1;
   }
 
   .card-source {
@@ -124,21 +160,42 @@
     border-radius: 10px;
     background: rgba(83, 74, 183, 0.15);
     color: var(--color-accent-purple);
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
   }
 
+  .sim-card:hover .card-source {
+    background: var(--color-accent-purple);
+    color: white;
+  }
+
+  /* ====== MOBILE ====== */
   @media (max-width: 768px) {
     .sim-card {
       padding: 16px 10px 12px;
       gap: 6px;
+      border-radius: 12px;
     }
 
     .sim-card:hover {
       transform: none;
+      box-shadow: none;
     }
 
     .sim-card:active {
       background: var(--color-surface-hover);
-      transform: scale(0.97);
+      transform: scale(0.96);
+      transition-duration: 0.1s;
+    }
+
+    .sim-card:hover .card-emoji {
+      transform: none;
+    }
+
+    .sim-card:hover .card-source {
+      background: rgba(83, 74, 183, 0.15);
+      color: var(--color-accent-purple);
     }
 
     .fav-btn {

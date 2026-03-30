@@ -66,13 +66,14 @@
     padding: 12px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    border-radius: 12px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
   }
 
   .search-bar:focus-within {
     border-color: var(--color-accent-purple);
-    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.15);
+    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.15), 0 4px 16px rgba(83, 74, 183, 0.1);
+    transform: translateY(-1px);
   }
 
   .search-icon {
@@ -106,12 +107,17 @@
     background: none;
     border: none;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     flex-shrink: 0;
   }
 
   .clear-btn:hover {
     background: var(--color-surface-hover);
     color: var(--color-text);
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  .clear-btn:active {
+    transform: scale(0.85);
   }
 </style>

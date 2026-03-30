@@ -9,6 +9,7 @@
 
 /* === Color Palette === */
 :root {
+  /* Dark theme (default) */
   --color-bg: #1a1a2e;
   --color-surface: #232342;
   --color-surface-hover: #2e2e55;
@@ -25,6 +26,8 @@
   --color-success: #2dd681;
   --color-warning: #efb927;
   --color-danger: #e24b4a;
+  --card-glow: rgba(83, 74, 183, 0.08);
+  --backdrop-blur: rgba(0, 0, 0, 0.5);
 
   --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas",
     monospace;
@@ -38,6 +41,31 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Light theme */
+:root.light {
+  --color-bg: #f0f2f5;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f3ff;
+  --color-surface-active: #ede9fe;
+  --color-border: #e0dff0;
+  --color-text: #1a1a2e;
+  --color-text-dim: #555570;
+  --color-text-muted: #8888a0;
+  --color-accent-purple: #6358d4;
+  --color-accent-orange: #e08f10;
+  --color-accent-red: #d63d3c;
+  --color-accent-teal: #18896a;
+  --color-accent-blue: #2d7acc;
+  --color-success: #22b56e;
+  --color-warning: #d6a310;
+  --color-danger: #d63d3c;
+  --card-glow: rgba(99, 88, 212, 0.06);
+  --backdrop-blur: rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* === Base === */
@@ -114,6 +142,25 @@ button {
   background: none;
   color: inherit;
   font-size: inherit;
+}
+
+/* === Theme transition === */
+html, html * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Light mode scrollbar */
+:root.light ::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+:root.light ::-webkit-scrollbar-thumb {
+  background: #c8c8d8;
+}
+:root.light ::-webkit-scrollbar-thumb:hover {
+  background: #a0a0b8;
+}
+:root.light * {
+  scrollbar-color: #c8c8d8 var(--color-bg);
 }
 
 /* === Smooth view transitions === */

@@ -18,8 +18,29 @@
   let showFavoritesOnly = $state(false);
   let favorites: Set<string> = $state(new Set());
   let sidebarOpen = $state(false);
+  let darkMode = $state(true);
 
   let searchBar: SearchBar | undefined = $state(undefined);
+
+  /* ── Theme ── */
+  $effect(() => {
+    const saved = localStorage.getItem("madar-theme");
+    if (saved === "light") {
+      darkMode = false;
+      document.documentElement.classList.add("light");
+    }
+  });
+
+  function toggleTheme() {
+    darkMode = !darkMode;
+    if (darkMode) {
+      document.documentElement.classList.remove("light");
+      localStorage.setItem("madar-theme", "dark");
+    } else {
+      document.documentElement.classList.add("light");
+      localStorage.setItem("madar-theme", "light");
+    }
+  }
 
   /* ── Derived: filtered simulations ── */
   let filteredSims = $derived.by(() => {
@@ -180,9 +201,9 @@
         <div class="header-row">
           <!-- Hamburger button (mobile only) -->
           <button class="hamburger" onclick={() => sidebarOpen = true} aria-label="Open menu">
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
               <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="12" x2="16" y2="12"/>
               <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
           </button>
@@ -194,6 +215,22 @@
               onInput={handleSearchInput}
             />
           </div>
+
+          <button class="theme-toggle" onclick={toggleTheme} aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}>
+            {#if darkMode}
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            {:else}
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            {/if}
+          </button>
         </div>
 
         {#if selectedCategory || selectedSource || selectedGrade || showFavoritesOnly}
@@ -236,6 +273,32 @@
           </div>
         {/if}
       </div>
+
+      <!-- Mobile bottom bar -->
+      <nav class="mobile-bottom-bar">
+        <button class="bottom-tab" class:active={!selectedCategory && !showFavoritesOnly} onclick={() => { handleCategoryChange(null); }}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>All</span>
+        </button>
+        <button class="bottom-tab" class:active={selectedCategory === 'physics'} onclick={() => handleCategoryChange(selectedCategory === 'physics' ? null : 'physics')}>
+          <span class="tab-emoji">⚡</span>
+          <span>Physics</span>
+        </button>
+        <button class="bottom-tab" class:active={selectedCategory === 'chemistry'} onclick={() => handleCategoryChange(selectedCategory === 'chemistry' ? null : 'chemistry')}>
+          <span class="tab-emoji">🧪</span>
+          <span>Chem</span>
+        </button>
+        <button class="bottom-tab" class:active={selectedCategory === 'biology'} onclick={() => handleCategoryChange(selectedCategory === 'biology' ? null : 'biology')}>
+          <span class="tab-emoji">🧬</span>
+          <span>Bio</span>
+        </button>
+        <button class="bottom-tab" class:active={showFavoritesOnly} onclick={handleShowFavorites}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill={showFavoritesOnly ? "var(--color-accent-red)" : "none"} stroke={showFavoritesOnly ? "var(--color-accent-red)" : "currentColor"} stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span>Favs</span>
+        </button>
+      </nav>
     </main>
   </div>
 {/if}
@@ -291,22 +354,53 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--color-text);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     flex-shrink: 0;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .hamburger:hover {
     background: var(--color-surface-hover);
   }
 
+  .hamburger:active {
+    transform: scale(0.9);
+    transition-duration: 0.08s;
+  }
+
   .search-wrapper {
     flex: 1;
     min-width: 0;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: var(--color-text-dim);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .theme-toggle:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-accent-orange);
+    border-color: var(--color-accent-orange);
+    transform: rotate(15deg);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.92) rotate(15deg);
   }
 
   .filter-info {
@@ -354,6 +448,12 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 14px;
+    animation: gridFadeIn 0.35s ease;
+  }
+
+  @keyframes gridFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .empty-state {
@@ -369,6 +469,11 @@
   .empty-state h3 { font-size: 20px; font-weight: 600; color: var(--color-text); margin-bottom: 8px; }
   .empty-state p { font-size: 15px; color: var(--color-text-dim); }
 
+  /* ── Mobile bottom bar (hidden on desktop) ── */
+  .mobile-bottom-bar {
+    display: none;
+  }
+
   /* ======= MOBILE (<768px) ======= */
   @media (max-width: 768px) {
     .hamburger {
@@ -382,7 +487,7 @@
       bottom: 0;
       z-index: 100;
       transform: translateX(-100%);
-      transition: transform 0.25s ease;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
       width: 300px;
       max-width: 85vw;
     }
@@ -396,7 +501,9 @@
       position: fixed;
       inset: 0;
       z-index: 99;
-      background: rgba(0, 0, 0, 0.5);
+      background: var(--backdrop-blur);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       animation: fadeIn 0.2s ease;
     }
 
@@ -405,7 +512,8 @@
     }
 
     .sim-grid-container {
-      padding: 12px 14px 20px;
+      padding: 12px 14px 0;
+      padding-bottom: 80px;
     }
 
     .sim-grid {
@@ -419,6 +527,61 @@
 
     .filter-label, .filter-count {
       font-size: 14px;
+    }
+
+    /* Mobile bottom bar */
+    .mobile-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      padding: 6px 4px;
+      padding-bottom: max(6px, env(safe-area-inset-bottom));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .bottom-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      color: var(--color-text-muted);
+      font-size: 10px;
+      font-weight: 500;
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      min-width: 52px;
+    }
+
+    .bottom-tab:active {
+      transform: scale(0.88);
+      transition-duration: 0.08s;
+    }
+
+    .bottom-tab.active {
+      color: var(--color-accent-purple);
+    }
+
+    .bottom-tab.active .tab-emoji {
+      transform: scale(1.15);
+    }
+
+    .tab-emoji {
+      font-size: 18px;
+      line-height: 1;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
   }
 
@@ -434,7 +597,8 @@
     }
 
     .sim-grid-container {
-      padding: 10px 10px 16px;
+      padding: 10px 10px 0;
+      padding-bottom: 80px;
     }
   }
 

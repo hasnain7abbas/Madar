@@ -303,7 +303,7 @@
 
   @media (max-width: 768px) {
     .player-bar {
-      padding: 6px 8px;
+      padding: 8px 10px;
       gap: 6px;
     }
 
@@ -313,7 +313,10 @@
     }
 
     .bar-btn {
-      padding: 8px;
+      padding: 10px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 10px;
     }
 
     .sim-name {
@@ -330,6 +333,10 @@
 
     .sim-emoji {
       font-size: 16px;
+    }
+
+    .back-btn {
+      background: var(--color-surface-hover);
     }
   }
 
