@@ -371,24 +371,47 @@
     .sidebar {
       width: 100%;
       min-width: 100%;
+      padding-top: env(safe-area-inset-top);
     }
 
     .close-btn {
       display: flex;
+      width: 40px;
+      height: 40px;
+    }
+
+    .sidebar-header {
+      padding: 8px 12px;
+    }
+
+    .logo-svg {
+      max-height: 110px;
+    }
+
+    .section {
+      padding: 8px 12px;
     }
 
     .category-btn {
       padding: 12px 12px;
+      min-height: 48px;
     }
 
     .pill {
-      padding: 8px 16px;
+      padding: 9px 16px;
       font-size: 14px;
+      min-height: 36px;
     }
 
     .favorites-btn {
-      padding: 12px 14px;
-      font-size: 16px;
+      padding: 13px 14px;
+      font-size: 15px;
+      min-height: 48px;
+    }
+
+    .sidebar-footer {
+      padding: 10px 16px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
     }
   }
 </style>

@@ -1,18 +1,34 @@
 <script lang="ts">
+  import { simulations } from "./simulations";
+
+  const STORAGE_KEY = "madar-tutorial-seen";
+
   let visible = $state(false);
   let activeVideo: "howto" | "install" | null = $state(null);
 
   $effect(() => {
-    visible = true;
+    try {
+      if (localStorage.getItem(STORAGE_KEY) !== "1") {
+        visible = true;
+      }
+    } catch {
+      visible = true;
+    }
   });
+
+  function markSeen() {
+    try { localStorage.setItem(STORAGE_KEY, "1"); } catch {}
+  }
 
   function dismiss() {
     visible = false;
     activeVideo = null;
+    markSeen();
   }
 
   function playVideo(type: "howto" | "install") {
     activeVideo = type;
+    markSeen();
   }
 
   function backToMenu() {
@@ -20,6 +36,7 @@
   }
 
   const baseUrl = import.meta.env.BASE_URL || "/";
+  const simCount = simulations.length;
 </script>
 
 {#if visible}
@@ -63,7 +80,7 @@
 
         <div class="welcome-icon">🔬</div>
         <h2 class="welcome-title">Welcome to Madar!</h2>
-        <p class="welcome-desc">360+ interactive STEM simulations in one place. Want a quick tour?</p>
+        <p class="welcome-desc">{simCount}+ interactive STEM simulations in one place. Want a quick tour?</p>
 
         <div class="btn-group">
           <button class="tutorial-btn primary" onclick={() => playVideo("howto")}>

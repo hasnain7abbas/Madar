@@ -304,6 +304,7 @@
   @media (max-width: 768px) {
     .player-bar {
       padding: 8px 10px;
+      padding-top: max(8px, env(safe-area-inset-top));
       gap: 6px;
     }
 

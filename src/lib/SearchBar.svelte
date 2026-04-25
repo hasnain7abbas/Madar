@@ -41,9 +41,15 @@
 
   <input
     bind:this={inputEl}
-    type="text"
+    type="search"
+    inputmode="search"
+    enterkeyhint="search"
+    autocomplete="off"
+    autocapitalize="off"
+    autocorrect="off"
+    spellcheck="false"
     class="search-input"
-    placeholder="Search simulations... (e.g. gravity, circuits, DNA)"
+    placeholder="Search simulations…"
     {value}
     oninput={handleInput}
   />
@@ -123,5 +129,30 @@
 
   .clear-btn:active {
     transform: scale(0.85);
+  }
+
+  /* iOS Safari adds a ✕ button to type="search". Hide it — we have our own. */
+  .search-input::-webkit-search-cancel-button,
+  .search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  @media (max-width: 768px) {
+    .search-bar {
+      padding: 10px 14px;
+      gap: 8px;
+    }
+
+    .search-input {
+      /* keep 16px to prevent iOS auto-zoom */
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .search-bar {
+      padding: 9px 12px;
+    }
   }
 </style>

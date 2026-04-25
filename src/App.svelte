@@ -14,6 +14,7 @@
   let selectedSim: Simulation | null = $state(null);
   let searchQuery = $state("");
   let selectedCategory: string | null = $state(null);
+  let selectedSubcategory: string | null = $state(null);
   let selectedSource: string | null = $state(null);
   let selectedGrade: string | null = $state(null);
   let showFavoritesOnly = $state(false);
@@ -22,6 +23,13 @@
   let darkMode = $state(true);
 
   let searchBar: SearchBar | undefined = $state(undefined);
+  let gridContainer: HTMLDivElement | undefined = $state(undefined);
+
+  function scrollGridToTop() {
+    if (gridContainer) {
+      gridContainer.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
 
   /* ── Theme ── */
   $effect(() => {
@@ -43,8 +51,8 @@
     }
   }
 
-  /* ── Derived: filtered simulations ── */
-  let filteredSims = $derived.by(() => {
+  /* ── Derived: simulations after category/source/grade/search but before subcategory ── */
+  let preSubSims = $derived.by(() => {
     let sims = SIMULATIONS;
     if (selectedCategory) sims = sims.filter((s) => s.category === selectedCategory);
     if (selectedSource) sims = sims.filter((s) => s.source === selectedSource);
@@ -62,6 +70,26 @@
       );
     }
     return sims;
+  });
+
+  /* ── Derived: subcategories with counts for the chip bar ── */
+  let subcategoryChips = $derived.by(() => {
+    if (!selectedCategory) return [] as Array<{ name: string; count: number }>;
+    const counts = new Map<string, number>();
+    for (const s of preSubSims) {
+      counts.set(s.subcategory, (counts.get(s.subcategory) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  /* ── Derived: final filtered sims (apply subcategory) ── */
+  let filteredSims = $derived.by(() => {
+    if (selectedSubcategory) {
+      return preSubSims.filter((s) => s.subcategory === selectedSubcategory);
+    }
+    return preSubSims;
   });
 
   let favoritesCount = $derived(favorites.size);
@@ -122,8 +150,15 @@
 
   function handleCategoryChange(category: string | null) {
     selectedCategory = category;
+    selectedSubcategory = null;
     showFavoritesOnly = false;
     sidebarOpen = false;
+    scrollGridToTop();
+  }
+
+  function handleSubcategoryClick(sub: string) {
+    selectedSubcategory = selectedSubcategory === sub ? null : sub;
+    scrollGridToTop();
   }
 
   function handleSourceChange(source: string | null) {
@@ -140,6 +175,7 @@
     showFavoritesOnly = !showFavoritesOnly;
     if (showFavoritesOnly) {
       selectedCategory = null;
+      selectedSubcategory = null;
       selectedSource = null;
       selectedGrade = null;
     }
@@ -234,15 +270,21 @@
           </button>
         </div>
 
-        {#if selectedCategory || selectedSource || selectedGrade || showFavoritesOnly}
+        {#if selectedCategory || selectedSource || selectedGrade || showFavoritesOnly || selectedSubcategory}
           <div class="filter-info">
             <span class="filter-label">
-              {#if showFavoritesOnly}Showing favorites{:else}Filtered{/if}
+              {#if showFavoritesOnly}
+                Showing favorites
+              {:else if selectedSubcategory}
+                {selectedSubcategory}
+              {:else}
+                Filtered
+              {/if}
             </span>
             <span class="filter-count">{filteredSims.length} sim{filteredSims.length !== 1 ? "s" : ""}</span>
             <button
               class="clear-filters"
-              onclick={() => { selectedCategory = null; selectedSource = null; selectedGrade = null; showFavoritesOnly = false; }}
+              onclick={() => { selectedCategory = null; selectedSubcategory = null; selectedSource = null; selectedGrade = null; showFavoritesOnly = false; }}
             >
               Clear
             </button>
@@ -252,9 +294,30 @@
             <span class="filter-count">{filteredSims.length} simulation{filteredSims.length !== 1 ? "s" : ""}</span>
           </div>
         {/if}
+
+        {#if selectedCategory && subcategoryChips.length > 1}
+          <div class="subcat-bar">
+            <button
+              class="subcat-chip"
+              class:active={selectedSubcategory === null}
+              onclick={() => (selectedSubcategory = null)}
+            >
+              All <span class="chip-count">{preSubSims.length}</span>
+            </button>
+            {#each subcategoryChips as sub}
+              <button
+                class="subcat-chip"
+                class:active={selectedSubcategory === sub.name}
+                onclick={() => handleSubcategoryClick(sub.name)}
+              >
+                {sub.name} <span class="chip-count">{sub.count}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
       </div>
 
-      <div class="sim-grid-container">
+      <div class="sim-grid-container" bind:this={gridContainer}>
         {#if !searchQuery && !selectedCategory && !selectedSource && !selectedGrade && !showFavoritesOnly}
           <HeroSection
             {selectedCategory}
@@ -447,6 +510,75 @@
     opacity: 0.8;
   }
 
+  .subcat-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 0 2px;
+    animation: fadeIn 0.25s ease;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .subcat-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .subcat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: capitalize;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .subcat-chip:hover {
+    color: var(--color-text);
+    background: var(--color-surface-hover);
+    border-color: var(--color-accent-purple);
+    transform: translateY(-1px);
+  }
+
+  .subcat-chip:active {
+    transform: scale(0.94);
+    transition-duration: 0.08s;
+  }
+
+  .subcat-chip.active {
+    color: white;
+    background: var(--color-accent-purple);
+    border-color: var(--color-accent-purple);
+    box-shadow: 0 2px 8px rgba(83, 74, 183, 0.35);
+  }
+
+  .chip-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  .subcat-chip:not(.active) .chip-count {
+    background: var(--color-bg);
+    color: var(--color-text-dim);
+  }
+
   .sim-grid-container {
     flex: 1;
     overflow-y: auto;
@@ -526,11 +658,17 @@
     }
 
     .main-header {
-      padding: 12px 14px 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 10px 14px 6px;
+      gap: 8px;
+      background: var(--color-bg);
+      padding-top: max(10px, env(safe-area-inset-top));
     }
 
     .sim-grid-container {
-      padding: 12px 14px 0;
+      padding: 8px 14px 0;
       padding-bottom: 80px;
     }
 
@@ -543,8 +681,38 @@
       gap: 6px;
     }
 
-    .filter-label, .filter-count {
-      font-size: 14px;
+    .filter-label {
+      font-size: 13px;
+      max-width: 60vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-transform: capitalize;
+    }
+
+    .filter-count {
+      font-size: 13px;
+    }
+
+    /* Subcategory chips become a horizontally scrollable strip */
+    .subcat-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -14px;
+      padding: 4px 14px 6px;
+      gap: 6px;
+    }
+
+    .subcat-chip {
+      padding: 7px 14px;
+      font-size: 13px;
+    }
+
+    .clear-filters {
+      font-size: 13px;
     }
 
     /* Mobile bottom bar */
@@ -570,7 +738,7 @@
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      padding: 6px 8px;
+      padding: 6px 6px;
       border-radius: 10px;
       color: var(--color-text-muted);
       font-size: 10px;
@@ -581,6 +749,9 @@
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       min-width: 52px;
+      flex: 1;
+      max-width: 84px;
+      position: relative;
     }
 
     .bottom-tab:active {
@@ -590,6 +761,18 @@
 
     .bottom-tab.active {
       color: var(--color-accent-purple);
+    }
+
+    .bottom-tab.active::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: var(--color-accent-purple);
     }
 
     .bottom-tab.active .tab-emoji {
@@ -611,12 +794,33 @@
     }
 
     .main-header {
-      padding: 10px 10px 0;
+      padding: 8px 10px 4px;
     }
 
     .sim-grid-container {
-      padding: 10px 10px 0;
+      padding: 6px 10px 0;
       padding-bottom: 80px;
+    }
+
+    .subcat-bar {
+      margin: 0 -10px;
+      padding: 4px 10px 6px;
+    }
+
+    .hamburger,
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .bottom-tab {
+      min-width: 48px;
+      font-size: 9.5px;
+    }
+
+    .tab-emoji {
+      font-size: 16px;
     }
   }
 

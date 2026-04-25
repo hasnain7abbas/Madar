@@ -81,14 +81,44 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+/* Suppress iOS gray tap highlight everywhere; we already animate :active */
+button,
+a,
+[role="button"],
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow the inputs to keep their own tap behavior on iOS */
+input,
+textarea {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 #app {
   width: 100vw;
   height: 100vh;
+  /* Use small viewport height where supported so the mobile bottom bar
+     isn't hidden behind the iOS dynamic browser chrome. */
+  height: 100svh;
   display: flex;
   position: relative;
   overflow: hidden;
+}
+
+/* Hide custom scrollbars on touch devices — they look out of place */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 }
 
 /* === Selection === */

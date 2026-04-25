@@ -31,6 +31,14 @@
       : simulation.description
   );
 
+  const gradeShort: Record<string, string> = {
+    "Elementary School": "Elem",
+    "Middle School": "MS",
+    "High School": "HS",
+    "College": "Col",
+  };
+  let gradeBadge = $derived(gradeShort[simulation.gradeLevel] ?? simulation.gradeLevel);
+
   function handleFavoriteClick(e: MouseEvent) {
     e.stopPropagation();
     onToggleFavorite();
@@ -52,6 +60,10 @@
 
   <div class="card-emoji">{simulation.thumbnailEmoji}</div>
   <h3 class="card-name">{simulation.name}</h3>
+  <div class="card-meta">
+    <span class="card-subcat" title={simulation.subcategory}>{simulation.subcategory}</span>
+    <span class="card-grade" title={simulation.gradeLevel}>{gradeBadge}</span>
+  </div>
   <span class="card-source">{simulation.source}</span>
   <span class="card-desc">{shortDesc}</span>
 </div>
@@ -175,9 +187,46 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     position: relative;
     z-index: 1;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  .card-subcat {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--cat-color);
+    background: rgba(83, 74, 183, 0.0);
+    border: 1px solid color-mix(in srgb, var(--cat-color) 35%, transparent);
+    padding: 2px 8px;
+    border-radius: 8px;
+    text-transform: capitalize;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-grade {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    background: var(--color-bg);
+    padding: 2px 7px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
   }
 
   .card-source {
@@ -266,9 +315,25 @@
       font-size: 14px;
     }
 
+    .card-meta {
+      gap: 4px;
+    }
+
+    .card-subcat {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      max-width: 90%;
+    }
+
+    .card-grade {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 6px;
+    }
+
     .card-source {
-      font-size: 11px;
-      padding: 2px 8px;
+      display: none;
     }
   }
 </style>

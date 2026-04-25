@@ -17,6 +17,11 @@
     "earth-science": "#2dd681",
     engineering: "#e24b4a",
   };
+
+  const counts: Record<string, number> = {};
+  for (const sim of simulations) {
+    counts[sim.category] = (counts[sim.category] ?? 0) + 1;
+  }
 </script>
 
 <div class="hero">
@@ -40,17 +45,21 @@
   </svg>
 
   <h1 class="hero-tagline">Explore. Play. Learn.</h1>
-  <p class="hero-subtitle">{simulations.length}+ interactive simulations — tap any card to start</p>
+  <p class="hero-subtitle">{simulations.length}+ interactive simulations — tap a subject to start</p>
 
-  <div class="hero-pills">
+  <div class="hero-grid">
     {#each CATEGORIES as cat}
       <button
-        class="hero-pill"
+        class="hero-card"
         class:active={selectedCategory === cat.id}
-        style="--pill-color: {categoryColors[cat.id]}"
+        style="--card-color: {categoryColors[cat.id]}"
         onclick={() => onCategoryChange(selectedCategory === cat.id ? null : cat.id)}
       >
-        {cat.emoji} {cat.name}
+        <span class="hero-card-emoji">{cat.emoji}</span>
+        <span class="hero-card-text">
+          <span class="hero-card-name">{cat.name}</span>
+          <span class="hero-card-count">{counts[cat.id] ?? 0} sims</span>
+        </span>
       </button>
     {/each}
   </div>
@@ -82,7 +91,8 @@
 
   .hero-tagline {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--color-text);
     margin-bottom: 6px;
   }
@@ -90,72 +100,127 @@
   .hero-subtitle {
     font-size: 15px;
     color: var(--color-text-dim);
-    margin-bottom: 18px;
+    margin-bottom: 22px;
   }
 
-  .hero-pills {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .hero-card {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .hero-pill {
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-text-dim);
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 20px;
+    border-left: 3px solid var(--card-color);
+    border-radius: 14px;
     cursor: pointer;
     font-family: inherit;
+    text-align: left;
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .hero-pill:hover {
-    color: var(--color-text);
+  .hero-card:hover {
     background: var(--color-surface-hover);
-    transform: translateY(-1px);
-    border-color: var(--pill-color);
+    border-color: var(--card-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   }
 
-  .hero-pill:active {
-    transform: scale(0.95);
+  .hero-card:active {
+    transform: scale(0.97);
     transition-duration: 0.08s;
   }
 
-  .hero-pill.active {
-    color: white;
-    background: var(--pill-color);
-    border-color: var(--pill-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  .hero-card.active {
+    background: color-mix(in srgb, var(--card-color) 15%, var(--color-surface));
+    border-color: var(--card-color);
+  }
+
+  .hero-card-emoji {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .hero-card-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .hero-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .hero-card-count {
+    font-size: 12px;
+    color: var(--color-text-dim);
+    margin-top: 2px;
   }
 
   @media (max-width: 768px) {
     .hero {
-      padding: 20px 14px 16px;
+      padding: 14px 14px 14px;
+    }
+
+    .hero-logo {
+      height: 56px;
+      margin-bottom: 8px;
     }
 
     .hero-tagline {
       font-size: 20px;
+      margin-bottom: 4px;
     }
 
     .hero-subtitle {
       font-size: 13px;
+      margin-bottom: 14px;
     }
 
-    .hero-pills {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      justify-content: flex-start;
-      width: 100%;
-      padding-bottom: 4px;
-      -webkit-overflow-scrolling: touch;
+    .hero-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
     }
 
-    .hero-pill {
-      flex-shrink: 0;
+    .hero-card {
+      padding: 11px 12px;
+      gap: 10px;
+      border-radius: 12px;
+    }
+
+    .hero-card-emoji {
+      font-size: 22px;
+    }
+
+    .hero-card-name {
+      font-size: 13px;
+    }
+
+    .hero-card-count {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .hero-card {
+      padding: 10px;
+      gap: 8px;
+    }
+
+    .hero-card-emoji {
+      font-size: 20px;
     }
   }
 </style>
