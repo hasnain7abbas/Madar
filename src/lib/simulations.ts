@@ -186,6 +186,7 @@ export const simulations: Simulation[] = [
     category: "physics",
     subcategory: "mechanics",
     gradeLevel: "Middle School",
+    gradeBand: "primary",
     source: "PhET",
     embedUrl: phet("friction"),
     thumbnailEmoji: "🔥",
@@ -212,6 +213,7 @@ export const simulations: Simulation[] = [
     category: "physics",
     subcategory: "mechanics",
     gradeLevel: "Middle School",
+    gradeBand: "primary",
     source: "PhET",
     embedUrl: phet("masses-and-springs-basics"),
     thumbnailEmoji: "🪀",
@@ -549,6 +551,7 @@ export const simulations: Simulation[] = [
     category: "physics",
     subcategory: "optics",
     gradeLevel: "Middle School",
+    gradeBand: "primary",
     source: "PhET",
     embedUrl: phet("color-vision"),
     thumbnailEmoji: "🌈",
@@ -631,6 +634,7 @@ export const simulations: Simulation[] = [
     category: "physics",
     subcategory: "thermodynamics",
     gradeLevel: "Middle School",
+    gradeBand: "primary",
     source: "PhET",
     embedUrl: phet("states-of-matter-basics"),
     thumbnailEmoji: "🌡️",
@@ -7678,6 +7682,41 @@ export const simulations: Simulation[] = [
     embedUrl: "https://phydemo.app/ray-optics/",
     thumbnailEmoji: "🔍",
     tags: ["ray", "optics", "lens", "mirror", "reflection", "refraction"],
+  },
+
+  // ==========================================================================
+  //  PRIMARY SCIENCE (Pakistan)  — PhET sims aimed at Grades 1–5 (پرائمری)
+  //  Filling the scarce primary band. CC BY (offline-bundle friendly).
+  // ==========================================================================
+  {
+    id: "phet-balancing-act",
+    name: "Balancing Act",
+    description:
+      "Place objects on a see-saw and figure out how to balance it — a playful first look at weight, distance, and balance.",
+    category: "physics",
+    subcategory: "mechanics",
+    gradeLevel: "Elementary School",
+    gradeBand: "primary",
+    source: "PhET",
+    embedUrl: phet("balancing-act"),
+    thumbnailEmoji: "⚖️",
+    boardTopic: "FBISE/PCTB General Science — Forces & Balance",
+    tags: ["balance", "see-saw", "weight", "force", "lever", "توازن"],
+  },
+  {
+    id: "phet-area-builder",
+    name: "Area Builder",
+    description:
+      "Build shapes out of colorful unit squares to explore area and perimeter — hands-on early geometry.",
+    category: "math",
+    subcategory: "geometry",
+    gradeLevel: "Elementary School",
+    gradeBand: "primary",
+    source: "PhET",
+    embedUrl: phet("area-builder"),
+    thumbnailEmoji: "🟦",
+    boardTopic: "PCTB Mathematics (Primary) — Area & Perimeter",
+    tags: ["area", "perimeter", "shapes", "squares", "geometry", "رقبہ"],
   },
 
   // ==========================================================================
