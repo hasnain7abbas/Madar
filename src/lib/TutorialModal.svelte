@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { simulations } from "./simulations";
+  import { simulations, GRADE_BANDS, type GradeBand } from "./simulations";
+
+  let { onPickGrade = (_band: GradeBand) => {} } = $props<{
+    onPickGrade?: (band: GradeBand) => void;
+  }>();
 
   const STORAGE_KEY = "madar-tutorial-seen";
 
@@ -33,6 +37,11 @@
 
   function backToMenu() {
     activeVideo = null;
+  }
+
+  function pickGrade(band: GradeBand) {
+    onPickGrade(band);
+    dismiss();
   }
 
   const baseUrl = import.meta.env.BASE_URL || "/";
@@ -80,7 +89,20 @@
 
         <div class="welcome-icon">🔬</div>
         <h2 class="welcome-title">Welcome to Madar!</h2>
-        <p class="welcome-desc">{simCount}+ interactive STEM simulations in one place. Want a quick tour?</p>
+        <p class="welcome-desc">{simCount}+ interactive STEM simulations in one place.</p>
+
+        <div class="grade-pick">
+          <p class="grade-pick-label">I am in… <span class="grade-pick-ur">میں پڑھتا ہوں</span></p>
+          <div class="grade-pick-row">
+            {#each GRADE_BANDS as band}
+              <button class="grade-pick-btn" onclick={() => pickGrade(band.id)} title={band.grades}>
+                <span class="grade-pick-btn-ur">{band.urdu}</span>
+                <span class="grade-pick-btn-en">{band.name}</span>
+                <span class="grade-pick-btn-num">{band.short}</span>
+              </button>
+            {/each}
+          </div>
+        </div>
 
         <div class="btn-group">
           <button class="tutorial-btn primary" onclick={() => playVideo("howto")}>
@@ -166,7 +188,84 @@
     font-size: 15px;
     color: var(--color-text-dim);
     padding: 0 24px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+  }
+
+  .grade-pick {
+    padding: 0 24px;
+    margin-bottom: 20px;
+  }
+
+  .grade-pick-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 10px;
+  }
+
+  .grade-pick-ur {
+    font-family: var(--font-urdu);
+    color: var(--color-text-dim);
+    margin-left: 4px;
+  }
+
+  .grade-pick-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .grade-pick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 6px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .grade-pick-btn:hover {
+    border-color: var(--color-accent-purple);
+    background: var(--color-surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .grade-pick-btn:active {
+    transform: scale(0.95);
+  }
+
+  .grade-pick-btn-ur {
+    font-family: var(--font-urdu);
+    font-size: 16px;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .grade-pick-btn-en {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-dim);
+  }
+
+  .grade-pick-btn-num {
+    font-size: 10px;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .grade-pick-row {
+      gap: 6px;
+    }
+
+    .grade-pick-btn {
+      padding: 10px 4px;
+    }
   }
 
   .btn-group {
