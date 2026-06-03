@@ -64,6 +64,15 @@ const phet = (slug: string, locale = "en") =>
 const myphysicslab = (path: string) =>
   `https://www.myphysicslab.com/${path}`;
 
+/**
+ * Concord Consortium "Lab" interactives. The dedicated embeddable host
+ * (lab.concord.org/embeddable.html) ships no X-Frame-Options, so these load
+ * inline. Openly licensed (CC). Pass the interactive path without extension,
+ * e.g. concord("sam/gas-laws/3-volume-pressure-relationship").
+ */
+const concord = (path: string) =>
+  `https://lab.concord.org/embeddable.html#interactives/${path}.json`;
+
 // ---- simulation data -------------------------------------------------------
 export const simulations: Simulation[] = [
   // ==========================================================================
@@ -7661,6 +7670,264 @@ export const simulations: Simulation[] = [
     thumbnailEmoji: "🔍",
     tags: ["ray", "optics", "lens", "mirror", "reflection", "refraction"],
   },
+
+  // ==========================================================================
+  //  CONCORD CONSORTIUM  (lab.concord.org — inline-embeddable, CC licensed)
+  //  Molecular-level interactives that fill the middle/secondary science gap.
+  //  All URLs header-checked (no X-Frame-Options) and JSON verified 200.
+  // ==========================================================================
+
+  // ---- Chemistry: gas laws ----
+  {
+    id: "concord-gas-pressure",
+    name: "What Is Pressure?",
+    description:
+      "Watch gas particles bounce around a container and collide with the walls to see what causes pressure at the molecular level.",
+    category: "chemistry",
+    subcategory: "gas laws",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "Concord",
+    embedUrl: concord("sam/gas-laws/2-what-is-pressure"),
+    thumbnailEmoji: "💨",
+    boardTopic: "FBISE/PCTB General Science — States of Matter",
+    tags: ["pressure", "gas", "particles", "kinetic", "molecules", "دباؤ"],
+  },
+  {
+    id: "concord-gas-volume-pressure",
+    name: "Volume & Pressure (Boyle's Law)",
+    description:
+      "Squeeze a gas into a smaller space and measure how the pressure rises — discover the inverse relationship of Boyle's Law.",
+    category: "chemistry",
+    subcategory: "gas laws",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("sam/gas-laws/3-volume-pressure-relationship"),
+    thumbnailEmoji: "🎈",
+    boardTopic: "FBISE Chemistry 9 — Gas Laws (Boyle's Law)",
+    tags: ["Boyle", "gas law", "volume", "pressure", "inverse", "گیس"],
+  },
+  {
+    id: "concord-gas-temp-volume",
+    name: "Temperature & Volume (Charles's Law)",
+    description:
+      "Heat a gas and watch its volume expand — explore the direct relationship between temperature and volume (Charles's Law).",
+    category: "chemistry",
+    subcategory: "gas laws",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("sam/gas-laws/4-temperature-volume-relationship"),
+    thumbnailEmoji: "🌡️",
+    boardTopic: "FBISE Chemistry 9 — Gas Laws (Charles's Law)",
+    tags: ["Charles", "gas law", "temperature", "volume", "expansion"],
+  },
+
+  // ---- Chemistry: states of matter / phase change ----
+  {
+    id: "concord-states-gas",
+    name: "Molecular View of a Gas",
+    description:
+      "Zoom in on a gas to see fast, far-apart particles moving freely — the molecular picture of the gaseous state.",
+    category: "chemistry",
+    subcategory: "states of matter",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "Concord",
+    embedUrl: concord("sam/phase-change/2-two-types-of-gases"),
+    thumbnailEmoji: "🟦",
+    boardTopic: "FBISE/PCTB General Science — States of Matter",
+    tags: ["gas", "states of matter", "particles", "molecules"],
+  },
+  {
+    id: "concord-states-solid",
+    name: "Molecular View of a Solid",
+    description:
+      "See how particles in a solid are packed tightly and vibrate in place, giving solids their fixed shape.",
+    category: "chemistry",
+    subcategory: "states of matter",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "Concord",
+    embedUrl: concord("sam/phase-change/4-solids"),
+    thumbnailEmoji: "🧊",
+    boardTopic: "FBISE/PCTB General Science — States of Matter",
+    tags: ["solid", "states of matter", "particles", "vibration"],
+  },
+  {
+    id: "concord-phase-change",
+    name: "Phase Change",
+    description:
+      "Add or remove energy and watch a substance melt, freeze, boil, and condense as its particles speed up or slow down.",
+    category: "chemistry",
+    subcategory: "states of matter",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "Concord",
+    embedUrl: concord("sam/phase-change/6-phase-changes-caused-by-energy-input"),
+    thumbnailEmoji: "♨️",
+    boardTopic: "FBISE/PCTB General Science — Change of State",
+    tags: ["phase change", "melting", "boiling", "evaporation", "energy"],
+  },
+
+  // ---- Chemistry: intermolecular attractions ----
+  {
+    id: "concord-intermolecular-intro",
+    name: "Seeing Intermolecular Attractions",
+    description:
+      "Pull molecules apart and feel the attractions between them — the forces that hold liquids and solids together.",
+    category: "chemistry",
+    subcategory: "bonding",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("sam/intermolecular-attractions/1-introduction"),
+    thumbnailEmoji: "🧲",
+    boardTopic: "FBISE Chemistry 10 — Intermolecular Forces",
+    tags: ["intermolecular", "attraction", "forces", "bonding", "polarity"],
+  },
+  {
+    id: "concord-hydrogen-bonds",
+    name: "Hydrogen Bonds",
+    description:
+      "Explore the special, extra-strong attraction between molecules like water that gives water its unusual properties.",
+    category: "chemistry",
+    subcategory: "bonding",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "Concord",
+    embedUrl: concord("sam/intermolecular-attractions/6-hydrogen-bonds-a-special-type-of-attraction"),
+    thumbnailEmoji: "💧",
+    boardTopic: "FBISE Chemistry 11 — Hydrogen Bonding",
+    tags: ["hydrogen bond", "water", "intermolecular", "polarity"],
+  },
+
+  // ---- Chemistry/Biology: diffusion & membranes ----
+  {
+    id: "concord-diffusion-drop",
+    name: "Diffusion of a Drop",
+    description:
+      "Drop dye into water and watch it spread as particles move from high to low concentration — diffusion in action.",
+    category: "chemistry",
+    subcategory: "solutions",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "Concord",
+    embedUrl: concord("sam/diffusion/1-dropping-dye-on-click"),
+    thumbnailEmoji: "🩸",
+    boardTopic: "FBISE/PCTB General Science — Mixtures & Solutions",
+    tags: ["diffusion", "concentration", "spreading", "particles"],
+  },
+  {
+    id: "concord-osmosis-membrane",
+    name: "Diffusion Across a Semipermeable Membrane",
+    description:
+      "See how only some particles pass through a semipermeable membrane — the basis of osmosis in living cells.",
+    category: "biology",
+    subcategory: "cell biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("sam/diffusion/4-semipermeable"),
+    thumbnailEmoji: "🧫",
+    boardTopic: "FBISE Biology 9 — Cell Membrane & Osmosis",
+    tags: ["osmosis", "diffusion", "membrane", "semipermeable", "cell"],
+  },
+
+  // ---- Physics: oscillations ----
+  {
+    id: "concord-pendulum",
+    name: "Pendulum",
+    description:
+      "Adjust a pendulum's length and mass and graph its swing to discover what controls its period.",
+    category: "physics",
+    subcategory: "mechanics",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("inquiry-space/pendulum/1-pendulum"),
+    thumbnailEmoji: "⏱️",
+    boardTopic: "FBISE Physics 10 — Simple Harmonic Motion",
+    tags: ["pendulum", "period", "oscillation", "SHM", "gravity"],
+  },
+  {
+    id: "concord-spring-mass",
+    name: "Spring & Mass",
+    description:
+      "Hang masses on a spring and graph the bounce to investigate how stiffness and mass change the motion.",
+    category: "physics",
+    subcategory: "mechanics",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("inquiry-space/pendulum/2-spring"),
+    thumbnailEmoji: "🪀",
+    boardTopic: "FBISE Physics 10 — Simple Harmonic Motion",
+    tags: ["spring", "mass", "oscillation", "Hooke", "SHM"],
+  },
+
+  // ---- Biology: molecular genetics ----
+  {
+    id: "concord-dna-to-protein",
+    name: "DNA to Protein",
+    description:
+      "Follow the journey from a gene's DNA code to a finished protein — an overview of transcription and translation.",
+    category: "biology",
+    subcategory: "molecular biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "Concord",
+    embedUrl: concord("sam/DNA-to-proteins/1-dna-to-protein"),
+    thumbnailEmoji: "🧬",
+    boardTopic: "FBISE Biology 10 — Gene Expression",
+    tags: ["DNA", "protein", "gene", "transcription", "translation"],
+  },
+  {
+    id: "concord-transcription",
+    name: "Modeling Transcription",
+    description:
+      "Build an mRNA strand from a DNA template base by base to see how transcription copies genetic information.",
+    category: "biology",
+    subcategory: "molecular biology",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "Concord",
+    embedUrl: concord("sam/DNA-to-proteins/2-modeling-transcription"),
+    thumbnailEmoji: "📜",
+    boardTopic: "FBISE Biology 12 — Transcription",
+    tags: ["transcription", "mRNA", "DNA", "RNA polymerase", "genetics"],
+  },
+  {
+    id: "concord-translation",
+    name: "Modeling Translation",
+    description:
+      "Match tRNA to mRNA codons at the ribosome and assemble amino acids into a protein chain.",
+    category: "biology",
+    subcategory: "molecular biology",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "Concord",
+    embedUrl: concord("sam/DNA-to-proteins/3-modeling-translation"),
+    thumbnailEmoji: "🔗",
+    boardTopic: "FBISE Biology 12 — Translation",
+    tags: ["translation", "ribosome", "tRNA", "codon", "amino acid"],
+  },
+  {
+    id: "concord-mutations",
+    name: "Mutations",
+    description:
+      "Change a single DNA base and watch how the resulting protein changes — explore the effect of mutations.",
+    category: "biology",
+    subcategory: "genetics",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "Concord",
+    embedUrl: concord("sam/DNA-to-proteins/4-mutations"),
+    thumbnailEmoji: "🧩",
+    boardTopic: "FBISE Biology 12 — Mutations",
+    tags: ["mutation", "DNA", "protein", "point mutation", "genetics"],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -7684,6 +7951,8 @@ export const SOURCES = [
   "GeoGebra",
   "Desmos",
   "oPhysics",
+  "Concord",
+  "LabXchange",
   "Other",
 ] as const;
 
