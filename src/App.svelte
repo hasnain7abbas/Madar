@@ -6,7 +6,7 @@
   import SimCard from "./lib/SimCard.svelte";
   import SimPlayer from "./lib/SimPlayer.svelte";
   import TutorialModal from "./lib/TutorialModal.svelte";
-  import { simulations as SIMULATIONS, getGradeBand, type Simulation } from "./lib/simulations";
+  import { simulations as SIMULATIONS, getGradeBand, getBoardTopic, type Simulation } from "./lib/simulations";
   import type { ViewMode } from "./lib/types";
 
   /* ── State ── */
@@ -67,6 +67,7 @@
           s.description.toLowerCase().includes(q) ||
           s.category.toLowerCase().includes(q) ||
           s.source.toLowerCase().includes(q) ||
+          getBoardTopic(s).toLowerCase().includes(q) ||
           (s.tags && s.tags.some((t) => t.toLowerCase().includes(q)))
       );
     }

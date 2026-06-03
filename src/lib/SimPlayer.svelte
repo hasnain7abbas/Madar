@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Simulation } from "./simulations";
-  import { getEmbedMode, localizedEmbedUrl } from "./simulations";
+  import { getEmbedMode, localizedEmbedUrl, getBoardTopic } from "./simulations";
 
   let {
     simulation,
@@ -17,6 +17,9 @@
   // Sims explicitly flagged "newtab" (or framing-blocked) open via a launch
   // card instead of an iframe that would render blank.
   let launchOnly = $derived(getEmbedMode(simulation) === "newtab");
+
+  // FBISE/PCTB curriculum hook shown in the player bar.
+  let boardTopic = $derived(getBoardTopic(simulation));
 
   // PhET sims can switch UI language by URL — offer an Urdu toggle for them.
   let phetLocalizable = $derived(simulation.source === "PhET");
@@ -83,7 +86,10 @@
 
     <div class="bar-center">
       <span class="sim-emoji">{simulation.thumbnailEmoji}</span>
-      <span class="sim-name">{simulation.name}</span>
+      <div class="sim-titles">
+        <span class="sim-name">{simulation.name}</span>
+        <span class="sim-board" title={boardTopic}>{boardTopic}</span>
+      </div>
       <span class="sim-source">{simulation.source}</span>
     </div>
 
@@ -231,10 +237,25 @@
     flex-shrink: 0;
   }
 
+  .sim-titles {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
   .sim-name {
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sim-board {
+    font-size: 11px;
+    color: var(--color-text-dim);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -8197,6 +8197,102 @@ export function localizedEmbedUrl(sim: Simulation, locale: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// FBISE / PCTB curriculum tagging
+// ---------------------------------------------------------------------------
+// Pakistani boards teach integrated General Science up to Grade 8, then split
+// into Physics/Chemistry/Biology at Grade 9 (FBISE + provincial boards). Rather
+// than hand-tagging every entry, we map each subcategory to a curriculum topic
+// and compose it with the subject implied by the category. A per-sim
+// `boardTopic` override always wins (see getBoardTopic).
+
+const SUBJECT_BY_CATEGORY: Record<Simulation["category"], string> = {
+  physics: "Physics",
+  chemistry: "Chemistry",
+  biology: "Biology",
+  math: "Mathematics",
+  "earth-science": "Earth & Space Science",
+  engineering: "Technology & Engineering",
+};
+
+/** subcategory -> FBISE/PCTB topic strand. */
+const TOPIC_BY_SUBCATEGORY: Record<string, string> = {
+  mechanics: "Forces, Motion & Energy",
+  mechanical: "Mechanics & Machines",
+  biomechanics: "Biomechanics",
+  waves: "Waves, Sound & Light",
+  optics: "Light & Optics",
+  spectroscopy: "Light & Spectroscopy",
+  electricity: "Electricity & Magnetism",
+  electrical: "Electricity & Circuits",
+  "electrical engineering": "Electrical Engineering",
+  electrochemistry: "Electrochemistry",
+  thermodynamics: "Heat & Thermodynamics",
+  thermochemistry: "Thermochemistry",
+  "states of matter": "States of Matter",
+  "physical properties": "Physical Properties of Matter",
+  nuclear: "Nuclear Physics",
+  "nuclear chemistry": "Nuclear Chemistry",
+  "atomic structure": "Atomic Structure",
+  atomic: "Atomic Structure",
+  "periodic table": "The Periodic Table",
+  bonding: "Chemical Bonding",
+  "molecular structure": "Molecular Structure",
+  reactions: "Chemical Reactions",
+  kinetics: "Reaction Kinetics",
+  equilibrium: "Chemical Equilibrium",
+  "gas laws": "Gases & Gas Laws",
+  solutions: "Solutions & Mixtures",
+  "acids & bases": "Acids, Bases & Salts",
+  "acids and bases": "Acids, Bases & Salts",
+  organic: "Organic Chemistry",
+  inorganic: "Inorganic Chemistry",
+  analytical: "Analytical Chemistry",
+  biochemistry: "Biochemistry",
+  laboratory: "Laboratory Skills",
+  materials: "Materials Science",
+  structural: "Structures & Materials",
+  "cell biology": "The Cell",
+  "molecular biology": "Molecular Biology",
+  genetics: "Genetics & Inheritance",
+  evolution: "Evolution & Natural Selection",
+  ecology: "Ecosystems & Environment",
+  microbiology: "Microbiology",
+  anatomy: "Human Anatomy",
+  physiology: "Human Physiology",
+  "human body": "The Human Body",
+  neuroscience: "Nervous System",
+  "medical technology": "Medical Technology",
+  astronomy: "Astronomy & Space",
+  geology: "Earth & Geology",
+  hydrology: "Water & Hydrology",
+  climate: "Climate & Weather",
+  atmosphere: "Atmosphere & Weather",
+  arithmetic: "Numbers & Arithmetic",
+  fractions: "Fractions",
+  ratios: "Ratio & Proportion",
+  algebra: "Algebra",
+  "linear algebra": "Linear Algebra",
+  functions: "Functions",
+  graphing: "Graphs & Functions",
+  geometry: "Geometry",
+  "3D geometry": "3D Geometry",
+  calculus: "Calculus",
+  statistics: "Statistics & Probability",
+};
+
+/**
+ * Resolve a sim's curriculum tag, e.g. "FBISE/PCTB Biology — Genetics &
+ * Inheritance". An explicit per-sim `boardTopic` always wins; otherwise it is
+ * composed from the category (subject) and subcategory (topic strand).
+ */
+export function getBoardTopic(sim: Simulation): string {
+  if (sim.boardTopic) return sim.boardTopic;
+  const subject = SUBJECT_BY_CATEGORY[sim.category] ?? "Science";
+  const topic = TOPIC_BY_SUBCATEGORY[sim.subcategory];
+  return topic ? `FBISE/PCTB ${subject} — ${topic}` : `FBISE/PCTB ${subject}`;
+}
+
+// ---------------------------------------------------------------------------
 // Helper utilities
 // ---------------------------------------------------------------------------
 
