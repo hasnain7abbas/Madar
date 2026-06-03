@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Simulation } from "./simulations";
+  import { getEmbedMode, localizedEmbedUrl } from "./simulations";
 
   let {
     simulation,
@@ -13,20 +14,60 @@
     onToggleFavorite: () => void;
   }>();
 
+  // Sims explicitly flagged "newtab" (or framing-blocked) open via a launch
+  // card instead of an iframe that would render blank.
+  let launchOnly = $derived(getEmbedMode(simulation) === "newtab");
+
+  // PhET sims can switch UI language by URL — offer an Urdu toggle for them.
+  let phetLocalizable = $derived(simulation.source === "PhET");
+  let locale = $state("en");
+  let iframeUrl = $derived(localizedEmbedUrl(simulation, locale));
+
   let loading = $state(true);
   let error = $state(false);
+  let loadTimer: ReturnType<typeof setTimeout> | undefined;
+
+  // Some sources never fire `load` or `error` when framing is blocked by
+  // X-Frame-Options / CSP — they just hang. Degrade to the launch card after
+  // a grace period so students never stare at a blank box.
+  function armLoadTimeout() {
+    clearTimeout(loadTimer);
+    if (launchOnly) return;
+    loading = true;
+    error = false;
+    loadTimer = setTimeout(() => {
+      if (loading) {
+        loading = false;
+        error = true;
+      }
+    }, 12000);
+  }
+
+  // Re-arm whenever the iframe URL changes (open, or locale switch).
+  $effect(() => {
+    iframeUrl; // track
+    armLoadTimeout();
+    return () => clearTimeout(loadTimer);
+  });
 
   function handleIframeLoad() {
+    clearTimeout(loadTimer);
     loading = false;
   }
 
   function handleIframeError() {
+    clearTimeout(loadTimer);
     loading = false;
     error = true;
   }
 
+  function setLocale(next: string) {
+    if (next === locale) return;
+    locale = next;
+  }
+
   function openInBrowser() {
-    window.open(simulation.embedUrl, "_blank");
+    window.open(iframeUrl, "_blank", "noopener");
   }
 </script>
 
@@ -47,6 +88,20 @@
     </div>
 
     <div class="bar-actions">
+      {#if phetLocalizable && !launchOnly}
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button
+            class="lang-btn"
+            class:active={locale === "en"}
+            onclick={() => setLocale("en")}
+          >EN</button>
+          <button
+            class="lang-btn lang-ur"
+            class:active={locale === "ur"}
+            onclick={() => setLocale("ur")}
+          >اردو</button>
+        </div>
+      {/if}
       <button
         class="bar-btn heart-btn"
         class:favorited={isFavorite}
@@ -66,39 +121,54 @@
     </div>
   </div>
 
-  <!-- Loading state -->
-  {#if loading}
-    <div class="loading-overlay">
-      <div class="loader">
-        <div class="loader-spinner"></div>
-        <p class="loader-text">Loading {simulation.name}...</p>
-        <p class="loader-hint">From {simulation.source}</p>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Error state -->
-  {#if error}
-    <div class="error-overlay">
-      <div class="error-content">
-        <span class="error-emoji">⚠</span>
-        <h3>Could not load simulation</h3>
-        <p>This simulation may not support embedding. Try opening it directly in your browser.</p>
+  {#if launchOnly}
+    <!-- Sources that block framing open in a new tab via a launch card -->
+    <div class="launch-overlay">
+      <div class="launch-content">
+        <span class="launch-emoji">{simulation.thumbnailEmoji}</span>
+        <h3>{simulation.name}</h3>
+        <p>This experiment runs on {simulation.source} and opens in a new tab — it can't be embedded here.</p>
         <button class="error-btn" onclick={openInBrowser}>
-          Open in Browser
+          Open experiment ↗
         </button>
       </div>
     </div>
   {:else}
-    <iframe
-      src={simulation.embedUrl}
-      title={simulation.name}
-      class="player-iframe"
-      sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-      allow="fullscreen"
-      onload={handleIframeLoad}
-      onerror={handleIframeError}
-    ></iframe>
+    <!-- Loading state -->
+    {#if loading}
+      <div class="loading-overlay">
+        <div class="loader">
+          <div class="loader-spinner"></div>
+          <p class="loader-text">Loading {simulation.name}...</p>
+          <p class="loader-hint">From {simulation.source}</p>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Error / framing-blocked fallback -->
+    {#if error}
+      <div class="error-overlay">
+        <div class="error-content">
+          <span class="error-emoji">⚠</span>
+          <h3>Could not load simulation</h3>
+          <p>This simulation may not support embedding. Try opening it directly in your browser.</p>
+          <button class="error-btn" onclick={openInBrowser}>
+            Open in Browser
+          </button>
+        </div>
+      </div>
+    {:else}
+      <iframe
+        src={iframeUrl}
+        title={simulation.name}
+        class="player-iframe"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        allow="fullscreen"
+        onload={handleIframeLoad}
+        onerror={handleIframeError}
+      ></iframe>
+    {/if}
   {/if}
 </div>
 
@@ -185,6 +255,44 @@
     gap: 4px;
   }
 
+  /* Language toggle (PhET Urdu) */
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 2px;
+    margin-right: 4px;
+  }
+
+  .lang-btn {
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .lang-btn.lang-ur {
+    font-family: var(--font-urdu);
+    font-size: 13px;
+  }
+
+  .lang-btn.active {
+    color: white;
+    background: var(--color-accent-purple);
+  }
+
+  .lang-btn:not(.active):hover {
+    color: var(--color-text);
+  }
+
   .heart-btn.favorited {
     color: var(--color-accent-red);
   }
@@ -254,6 +362,40 @@
     align-items: center;
     justify-content: center;
     padding: 40px;
+  }
+
+  /* Launch card (newtab sources) */
+  .launch-overlay {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .launch-content {
+    text-align: center;
+    max-width: 360px;
+  }
+
+  .launch-emoji {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .launch-content h3 {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 8px;
+  }
+
+  .launch-content p {
+    font-size: 13px;
+    color: var(--color-text-dim);
+    line-height: 1.6;
+    margin-bottom: 20px;
   }
 
   .error-content {
