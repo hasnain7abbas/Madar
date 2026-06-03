@@ -6,6 +6,16 @@
 // the University of Colorado Boulder.
 // ---------------------------------------------------------------------------
 
+/**
+ * Pakistani school grade bands. Science is one integrated subject up to
+ * Grade 8, then splits into Physics/Chemistry/Biology at Grade 9.
+ */
+export type GradeBand =
+  | "primary" // Grades 1–5 (پرائمری)
+  | "middle" // Grades 6–8 (مڈل)
+  | "secondary" // Grades 9–10 / Matric (میٹرک)
+  | "higher-secondary"; // Grades 11–12 / Inter (انٹر)
+
 export interface Simulation {
   id: string;
   name: string;
@@ -17,11 +27,39 @@ export interface Simulation {
   embedUrl: string;
   thumbnailEmoji: string;
   tags: string[];
+
+  // ---- Optional, additive fields (see MADAR_PAKISTAN_ROADMAP.md) ----
+
+  /**
+   * Constrained Pakistani band that drives the grade filter. When omitted it
+   * is derived from `gradeLevel` via {@link deriveGradeBand}, so existing
+   * entries keep working — set it explicitly only to override the mapping.
+   */
+  gradeBand?: GradeBand;
+
+  /** How the player should open it. Defaults to "iframe". */
+  embedMode?: "iframe" | "newtab";
+
+  /** Health flag set by the link-checker CI. Broken sims are hidden. */
+  status?: "live" | "broken";
+
+  /** Urdu localization (optional, per sim). */
+  urduName?: string;
+  urduDescription?: string;
+
+  /** Optional curriculum hook, e.g. "FBISE Bio 9 — Cell Structure". */
+  boardTopic?: string;
 }
 
 // ---- helpers for repetitive URL patterns ----
-const phet = (slug: string) =>
-  `https://phet.colorado.edu/sims/html/${slug}/latest/${slug}_all.html`;
+/**
+ * Build a PhET HTML5 sim URL. PhET sims support locale switching via the
+ * `?locale=` query param (e.g. `ur` for Urdu); we omit it for English so the
+ * canonical URLs — and the browser/offline cache — stay unchanged.
+ */
+const phet = (slug: string, locale = "en") =>
+  `https://phet.colorado.edu/sims/html/${slug}/latest/${slug}_all.html` +
+  (locale && locale !== "en" ? `?locale=${locale}` : "");
 
 const myphysicslab = (path: string) =>
   `https://www.myphysicslab.com/${path}`;
@@ -7648,6 +7686,63 @@ export const SOURCES = [
   "oPhysics",
   "Other",
 ] as const;
+
+// ---------------------------------------------------------------------------
+// Grade bands (Pakistan)
+// ---------------------------------------------------------------------------
+/** Ordered grade bands with bilingual labels for the filter UI. */
+export const GRADE_BANDS: ReadonlyArray<{
+  id: GradeBand;
+  name: string;
+  urdu: string;
+  short: string;
+  grades: string;
+}> = [
+  { id: "primary", name: "Primary", urdu: "پرائمری", short: "1–5", grades: "Grades 1–5" },
+  { id: "middle", name: "Middle", urdu: "مڈل", short: "6–8", grades: "Grades 6–8" },
+  { id: "secondary", name: "Matric", urdu: "میٹرک", short: "9–10", grades: "Grades 9–10" },
+  {
+    id: "higher-secondary",
+    name: "Inter",
+    urdu: "انٹر",
+    short: "11–12",
+    grades: "Grades 11–12",
+  },
+] as const;
+
+/** Map a legacy free-form `gradeLevel` string onto a Pakistani grade band. */
+export function deriveGradeBand(gradeLevel: string): GradeBand {
+  const g = gradeLevel.toLowerCase();
+  if (g.includes("elementary") || g.includes("primary")) return "primary";
+  if (g.includes("middle")) return "middle";
+  if (g.includes("college") || g.includes("university") || g.includes("inter"))
+    return "higher-secondary";
+  // "High School" and anything else default to secondary (Matric).
+  return "secondary";
+}
+
+/** Resolve a sim's grade band: explicit override, else derived from gradeLevel. */
+export function getGradeBand(sim: Simulation): GradeBand {
+  return sim.gradeBand ?? deriveGradeBand(sim.gradeLevel);
+}
+
+/** How a sim should be opened in the player. Defaults to "iframe". */
+export function getEmbedMode(sim: Simulation): "iframe" | "newtab" {
+  return sim.embedMode ?? "iframe";
+}
+
+/**
+ * Return a sim's embed URL with the requested locale applied where supported.
+ * Only PhET exposes a documented `?locale=` switch, so other sources are
+ * returned untouched.
+ */
+export function localizedEmbedUrl(sim: Simulation, locale: string): string {
+  if (!locale || locale === "en") return sim.embedUrl;
+  if (sim.source !== "PhET") return sim.embedUrl;
+  if (sim.embedUrl.includes("locale=")) return sim.embedUrl;
+  const sep = sim.embedUrl.includes("?") ? "&" : "?";
+  return `${sim.embedUrl}${sep}locale=${locale}`;
+}
 
 // ---------------------------------------------------------------------------
 // Helper utilities
