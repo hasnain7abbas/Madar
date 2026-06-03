@@ -73,6 +73,15 @@ const myphysicslab = (path: string) =>
 const concord = (path: string) =>
   `https://lab.concord.org/embeddable.html#interactives/${path}.json`;
 
+/**
+ * LabXchange (Harvard) lab simulations. Free and login-free to *open*, but the
+ * site sends X-Frame-Options: DENY, so these use embedMode "newtab" (launch
+ * card) rather than inline iframes. Mostly CC BY-NC-SA: linking is fine, do
+ * NOT mirror for offline use without checking the per-asset license.
+ */
+const labxchange = (id: string) =>
+  `https://www.labxchange.org/library/items/lb:LabXchange:${id}:lx_simulation:1`;
+
 // ---- simulation data -------------------------------------------------------
 export const simulations: Simulation[] = [
   // ==========================================================================
@@ -7927,6 +7936,141 @@ export const simulations: Simulation[] = [
     thumbnailEmoji: "🧩",
     boardTopic: "FBISE Biology 12 — Mutations",
     tags: ["mutation", "DNA", "protein", "point mutation", "genetics"],
+  },
+
+  // ==========================================================================
+  //  LABXCHANGE  (Harvard — free, login-free)
+  //  Site sends X-Frame-Options: DENY, so these open via a launch card
+  //  (embedMode: "newtab"). CC BY-NC-SA: link OK, no offline mirroring.
+  //  All asset URLs verified 200.
+  // ==========================================================================
+  {
+    id: "labxchange-gel-electrophoresis",
+    name: "Gel Electrophoresis",
+    description:
+      "Run DNA fragments through a gel and separate them by size — the core technique of DNA fingerprinting and genetics labs.",
+    category: "biology",
+    subcategory: "molecular biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("9548bee3"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🧬",
+    boardTopic: "FBISE Biology 10 — Biotechnology",
+    tags: ["gel electrophoresis", "DNA", "fragments", "biotechnology", "lab"],
+  },
+  {
+    id: "labxchange-separating-dna",
+    name: "Separating DNA With Gel Electrophoresis",
+    description:
+      "See why DNA pieces of different sizes travel different distances through a gel under an electric field.",
+    category: "biology",
+    subcategory: "molecular biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("ef33215a"),
+    embedMode: "newtab",
+    thumbnailEmoji: "⚡",
+    boardTopic: "FBISE Biology 10 — Biotechnology",
+    tags: ["DNA", "gel", "electrophoresis", "separation", "size"],
+  },
+  {
+    id: "labxchange-natural-selection",
+    name: "Natural Selection Simulation",
+    description:
+      "Change the environment of a population and watch which traits survive and spread over generations.",
+    category: "biology",
+    subcategory: "evolution",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("dc2f80fe"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🦎",
+    boardTopic: "FBISE Biology — Variation & Natural Selection",
+    tags: ["natural selection", "evolution", "adaptation", "traits", "population"],
+  },
+  {
+    id: "labxchange-mitosis",
+    name: "Mitosis and Cytokinesis",
+    description:
+      "Step through cell division to see how one cell becomes two genetically identical daughter cells.",
+    category: "biology",
+    subcategory: "cell biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("0488d9ea"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🔬",
+    boardTopic: "FBISE Biology 9 — Cell Cycle & Mitosis",
+    tags: ["mitosis", "cell division", "cytokinesis", "cell cycle", "chromosomes"],
+  },
+  {
+    id: "labxchange-meiosis",
+    name: "Meiosis in Animal Cells",
+    description:
+      "Follow meiosis as it halves the chromosome number to make egg and sperm cells, mixing genes along the way.",
+    category: "biology",
+    subcategory: "cell biology",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("37f58b9c"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🧫",
+    boardTopic: "FBISE Biology 12 — Meiosis",
+    tags: ["meiosis", "gametes", "chromosomes", "reproduction", "genetics"],
+  },
+  {
+    id: "labxchange-cell-cycle-control",
+    name: "Control of the Cell Cycle",
+    description:
+      "Play through the checkpoints that control when a cell divides — and what happens when control breaks down.",
+    category: "biology",
+    subcategory: "cell biology",
+    gradeLevel: "College",
+    gradeBand: "higher-secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("e5fd7936"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🔁",
+    boardTopic: "FBISE Biology 12 — Cell Cycle Regulation",
+    tags: ["cell cycle", "checkpoints", "mitosis", "cancer", "regulation"],
+  },
+  {
+    id: "labxchange-ecology-lab",
+    name: "Ecology Lab",
+    description:
+      "Adjust populations of producers, prey, and predators and watch how an ecosystem stays in balance — or collapses.",
+    category: "biology",
+    subcategory: "ecology",
+    gradeLevel: "Middle School",
+    gradeBand: "middle",
+    source: "LabXchange",
+    embedUrl: labxchange("1ddbf348"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🌿",
+    boardTopic: "FBISE/PCTB General Science — Ecosystems",
+    tags: ["ecology", "ecosystem", "food chain", "predator", "prey", "population"],
+  },
+  {
+    id: "labxchange-egg-lab",
+    name: "The Egg Lab (Osmosis)",
+    description:
+      "Soak a shell-less egg in different solutions and watch it swell or shrink — a hands-on look at osmosis.",
+    category: "biology",
+    subcategory: "cell biology",
+    gradeLevel: "High School",
+    gradeBand: "secondary",
+    source: "LabXchange",
+    embedUrl: labxchange("1c122784"),
+    embedMode: "newtab",
+    thumbnailEmoji: "🥚",
+    boardTopic: "FBISE Biology 9 — Osmosis & Diffusion",
+    tags: ["osmosis", "egg", "solution", "diffusion", "membrane", "tonicity"],
   },
 ];
 
