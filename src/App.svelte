@@ -6,7 +6,7 @@
   import SimCard from "./lib/SimCard.svelte";
   import SimPlayer from "./lib/SimPlayer.svelte";
   import TutorialModal from "./lib/TutorialModal.svelte";
-  import { simulations as SIMULATIONS, type Simulation } from "./lib/simulations";
+  import { simulations as SIMULATIONS, getGradeBand, type Simulation } from "./lib/simulations";
   import type { ViewMode } from "./lib/types";
 
   /* ── State ── */
@@ -53,10 +53,11 @@
 
   /* ── Derived: simulations after category/source/grade/search but before subcategory ── */
   let preSubSims = $derived.by(() => {
-    let sims = SIMULATIONS;
+    // Hide sims the link-checker flagged as broken (roadmap §10).
+    let sims = SIMULATIONS.filter((s) => s.status !== "broken");
     if (selectedCategory) sims = sims.filter((s) => s.category === selectedCategory);
     if (selectedSource) sims = sims.filter((s) => s.source === selectedSource);
-    if (selectedGrade) sims = sims.filter((s) => s.gradeLevel === selectedGrade);
+    if (selectedGrade) sims = sims.filter((s) => getGradeBand(s) === selectedGrade);
     if (showFavoritesOnly) sims = sims.filter((s) => favorites.has(s.id));
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
@@ -200,7 +201,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<TutorialModal />
+<TutorialModal onPickGrade={(band) => handleGradeChange(band)} />
 
 {#if viewMode === "playing" && selectedSim}
   <div class="player-view">

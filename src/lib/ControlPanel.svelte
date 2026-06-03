@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CATEGORIES, SOURCES } from "./simulations";
+  import { CATEGORIES, SOURCES, GRADE_BANDS } from "./simulations";
 
   let {
     selectedCategory,
@@ -22,8 +22,6 @@
     onShowFavorites: () => void;
     onClose?: () => void;
   }>();
-
-  const grades = ["Middle School", "High School", "College"];
 
   function handleSourceClick(source: string | null) {
     onSourceChange(source === selectedSource ? null : source);
@@ -125,11 +123,17 @@
     </section>
 
     <section class="section">
-      <h2 class="section-title">Grade Level</h2>
+      <h2 class="section-title">Grade Level · درجہ</h2>
       <div class="pill-group">
-        {#each grades as grade}
-          <button class="pill" class:active={selectedGrade === grade} onclick={() => handleGradeClick(grade)}>
-            {grade}
+        {#each GRADE_BANDS as band}
+          <button
+            class="pill grade-pill"
+            class:active={selectedGrade === band.id}
+            onclick={() => handleGradeClick(band.id)}
+            title={band.grades}
+          >
+            <span class="grade-ur">{band.urdu}</span>
+            <span class="grade-en">{band.name} {band.short}</span>
           </button>
         {/each}
       </div>
@@ -303,6 +307,23 @@
     background: var(--color-accent-purple);
     border-color: var(--color-accent-purple);
     box-shadow: 0 2px 10px rgba(83, 74, 183, 0.35);
+  }
+
+  .grade-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .grade-ur {
+    font-family: var(--font-urdu);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .grade-en {
+    font-size: 12px;
+    opacity: 0.85;
   }
 
   .favorites-section { border-bottom: none; }
