@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Simulation } from "./simulations";
+  import { getUrduName } from "./simulations";
 
   let {
     simulation,
@@ -38,6 +39,7 @@
     "College": "Col",
   };
   let gradeBadge = $derived(gradeShort[simulation.gradeLevel] ?? simulation.gradeLevel);
+  let urduName = $derived(getUrduName(simulation));
 
   function handleFavoriteClick(e: MouseEvent) {
     e.stopPropagation();
@@ -60,6 +62,9 @@
 
   <div class="card-emoji">{simulation.thumbnailEmoji}</div>
   <h3 class="card-name">{simulation.name}</h3>
+  {#if urduName}
+    <span class="card-name-ur" dir="rtl" lang="ur">{urduName}</span>
+  {/if}
   <div class="card-meta">
     <span class="card-subcat" title={simulation.subcategory}>{simulation.subcategory}</span>
     <span class="card-grade" title={simulation.gradeLevel}>{gradeBadge}</span>
@@ -189,6 +194,19 @@
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-name-ur {
+    font-family: var(--font-urdu);
+    font-size: 14px;
+    color: var(--color-text-dim);
+    line-height: 1.5;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     position: relative;
     z-index: 1;
   }

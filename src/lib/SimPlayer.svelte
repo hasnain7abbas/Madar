@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Simulation } from "./simulations";
-  import { getEmbedMode, localizedEmbedUrl, getBoardTopic } from "./simulations";
+  import { getEmbedMode, localizedEmbedUrl, getBoardTopic, getUrduName } from "./simulations";
 
   let {
     simulation,
@@ -20,6 +20,9 @@
 
   // FBISE/PCTB curriculum hook shown in the player bar.
   let boardTopic = $derived(getBoardTopic(simulation));
+
+  // Urdu name shown alongside the English title where we have a translation.
+  let urduName = $derived(getUrduName(simulation));
 
   // PhET sims can switch UI language by URL — offer an Urdu toggle for them.
   let phetLocalizable = $derived(simulation.source === "PhET");
@@ -87,7 +90,7 @@
     <div class="bar-center">
       <span class="sim-emoji">{simulation.thumbnailEmoji}</span>
       <div class="sim-titles">
-        <span class="sim-name">{simulation.name}</span>
+        <span class="sim-name">{simulation.name}{#if urduName}<span class="sim-name-ur" dir="rtl" lang="ur"> · {urduName}</span>{/if}</span>
         <span class="sim-board" title={boardTopic}>{boardTopic}</span>
       </div>
       <span class="sim-source">{simulation.source}</span>
@@ -251,6 +254,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .sim-name-ur {
+    font-family: var(--font-urdu);
+    font-weight: 500;
+    color: var(--color-text-dim);
   }
 
   .sim-board {

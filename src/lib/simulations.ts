@@ -8293,6 +8293,180 @@ export function getBoardTopic(sim: Simulation): string {
 }
 
 // ---------------------------------------------------------------------------
+// Urdu localization (Roadmap §7 / Phase 3)
+// ---------------------------------------------------------------------------
+// Most-used sims appear many times under qualified names — e.g. "Color Vision",
+// "Color Vision (Biology)", "Color Vision (Elementary)", "Color Vision — Three
+// Cones". Rather than hand-tagging every entry, we translate the canonical
+// concept once and look it up by a normalized base name, so every variant of a
+// core sim shows the same Urdu. A per-sim `urduName`/`urduDescription` always
+// wins (see getUrduName/getUrduDescription). Translations cover the foundational
+// PhET/Concord catalog a Pakistani student is most likely to search for.
+
+/** Strip qualifiers/subtitles so "Color Vision (Biology)" → "color vision". */
+function urduBaseKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s*\([^)]*\)/g, "") // drop "(Biology)", "(College)", "(Middle School)"…
+    .replace(/\s+[—–]\s+.*$/, "") // drop em/en-dash subtitle ("Boyle's Law — P × V = …")
+    .replace(/\s+-\s+.*$/, "") // drop spaced-hyphen subtitle ("… - Virtual Lab")
+    .replace(/:.*$/, "") // drop ": Basics", ": Two Variables", ": DC"
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Canonical concept (normalized base name) → Urdu name + optional description. */
+const URDU_BY_BASE: Record<string, { name: string; desc?: string }> = {
+  // ── Physics ──
+  "color vision": { name: "رنگوں کی بینائی", desc: "روشنی اور آنکھ کے مخروطی خلیوں سے رنگ کیسے بنتے ہیں۔" },
+  "bending light": { name: "روشنی کا جھکاؤ", desc: "روشنی ایک مادے سے دوسرے میں جاتے ہوئے کیسے مڑتی ہے۔" },
+  "blackbody spectrum": { name: "بلیک باڈی طیف" },
+  "charges and fields": { name: "برقی بار اور میدان" },
+  "coulomb's law": { name: "کولمب کا قانون" },
+  "gravity force lab": { name: "ثقلی قوت لیب" },
+  "gravity and orbits": { name: "ثقل اور مدار", desc: "کشش ثقل سیاروں اور چاند کو مدار میں کیسے رکھتی ہے۔" },
+  "gravity force lab: basics": { name: "ثقلی قوت: بنیادی" },
+  "ohm's law": { name: "اوہم کا قانون", desc: "وولٹیج، کرنٹ اور مزاحمت کے درمیان تعلق۔" },
+  "hooke's law": { name: "ہک کا قانون" },
+  "faraday's law": { name: "فیراڈے کا قانون" },
+  "forces and motion: basics": { name: "قوتیں اور حرکت: بنیادی", desc: "دھکیلنے اور کھینچنے سے اشیاء کیسے حرکت کرتی ہیں۔" },
+  friction: { name: "رگڑ" },
+  "projectile motion": { name: "پھینکی گئی شے کی حرکت", desc: "پھینکی گئی شے کا خمدار راستہ اور اس پر اثر انداز عوامل۔" },
+  "projectile motion lab": { name: "پھینکی گئی شے کی حرکت کا لیب" },
+  "pendulum lab": { name: "پنڈولم لیب", desc: "آونگھ کی لمبائی اور ثقل اس کے دورانیے کو کیسے بدلتے ہیں۔" },
+  pendulum: { name: "پنڈولم" },
+  "energy skate park": { name: "توانائی سکیٹ پارک", desc: "حرکی اور وضعی توانائی کے درمیان تبادلہ۔" },
+  "energy skate park: basics": { name: "توانائی سکیٹ پارک: بنیادی" },
+  "energy forms and changes": { name: "توانائی کی اقسام اور تبدیلیاں" },
+  "masses and springs": { name: "کمیتیں اور اسپرنگ" },
+  "masses and springs: basics": { name: "کمیتیں اور اسپرنگ: بنیادی" },
+  "spring & mass": { name: "اسپرنگ اور کمیت" },
+  "wave on a string": { name: "ڈوری پر لہر", desc: "ڈوری پر لہریں کیسے بنتی اور سفر کرتی ہیں۔" },
+  "wave interference": { name: "لہروں کی مداخلت" },
+  "waves intro": { name: "لہروں کا تعارف" },
+  "sound waves": { name: "صوتی لہریں" },
+  "geometric optics": { name: "ہندسی بصریات" },
+  "geometric optics: basics": { name: "ہندسی بصریات: بنیادی" },
+  buoyancy: { name: "قوتِ اچھال", desc: "اشیاء سیال میں کیوں تیرتی یا ڈوبتی ہیں۔" },
+  density: { name: "کثافت", desc: "کمیت اور حجم کا تناسب اور تیرنے ڈوبنے سے تعلق۔" },
+  "under pressure": { name: "دباؤ کے تحت" },
+  "fluid pressure and flow": { name: "سیال کا دباؤ اور بہاؤ" },
+  "what is pressure?": { name: "دباؤ کیا ہے؟" },
+  "states of matter": { name: "مادے کی حالتیں", desc: "ٹھوس، مائع اور گیس میں ذرات کی ترتیب اور حرکت۔" },
+  "states of matter: basics": { name: "مادے کی حالتیں: بنیادی" },
+  "gas properties": { name: "گیس کی خصوصیات" },
+  "gases intro": { name: "گیسوں کا تعارف" },
+  "magnets and electromagnets": { name: "مقناطیس اور برقی مقناطیس" },
+  "resistance in a wire": { name: "تار میں مزاحمت" },
+  "circuit construction kit": { name: "برقی دوری بنانے کی کٹ", desc: "بیٹری، تار اور بلب سے برقی دوری بنائیں۔" },
+  "capacitor lab": { name: "کپیسیٹر لیب" },
+  "balloons and static electricity": { name: "غبارے اور جامد بجلی" },
+  "collision lab": { name: "تصادم لیب" },
+  "kepler's laws": { name: "کیپلر کے قوانین" },
+  "my solar system": { name: "میرا نظامِ شمسی" },
+  "half-life & radioactive decay": { name: "نصف زندگی اور تابکار تنزل" },
+  "alpha, beta & gamma decay": { name: "الفا، بیٹا اور گاما تنزل" },
+  "rutherford scattering": { name: "ردرفورڈ کا بکھراؤ" },
+  "rutherford gold foil experiment": { name: "ردرفورڈ کا سونے کے ورق کا تجربہ" },
+  "vector addition": { name: "سمتیہ جمع" },
+  "normal modes": { name: "معیاری اوضاع" },
+  "fourier: making waves": { name: "فوریئر: لہریں بنانا" },
+
+  // ── Chemistry ──
+  "build an atom": { name: "ایٹم بنائیں", desc: "پروٹون، نیوٹرون اور الیکٹرون سے ایٹم تشکیل دیں۔" },
+  "build a molecule": { name: "سالمہ بنائیں" },
+  "ph scale": { name: "پی ایچ پیمانہ", desc: "محلول کتنا تیزابی یا اساسی ہے، اسے ماپیں۔" },
+  "acid-base solutions": { name: "تیزاب اساس محلول" },
+  "acid-base titration": { name: "تیزاب اساس ٹائٹریشن" },
+  concentration: { name: "ارتکاز" },
+  "concentration lab": { name: "ارتکاز لیب" },
+  molarity: { name: "مولر ارتکاز" },
+  "molarity lab": { name: "مولر ارتکاز لیب" },
+  "balancing chemical equations": { name: "کیمیائی مساوات کا توازن", desc: "کیمیائی مساوات کے دونوں اطراف ایٹم برابر کریں۔" },
+  "balancing equations game": { name: "مساوات توازن کھیل" },
+  "reactants, products and leftovers": { name: "عمل گر، محصولات اور بقایا" },
+  "molecule shapes": { name: "سالموں کی شکلیں" },
+  "molecule polarity": { name: "سالماتی قطبیت" },
+  "isotopes and atomic mass": { name: "ہم جا اور ایٹمی کمیت" },
+  "models of the hydrogen atom": { name: "ہائیڈروجن ایٹم کے نمونے" },
+  "beer's law lab": { name: "بیئر کے قانون کا لیب" },
+  diffusion: { name: "انتشار", desc: "ذرات زیادہ ارتکاز سے کم ارتکاز کی طرف کیسے پھیلتے ہیں۔" },
+  "atomic interactions": { name: "ایٹمی تعاملات" },
+  "lewis dot structures": { name: "لیوس ڈاٹ ساختیں" },
+  "build a molecule (advanced)": { name: "سالمہ بنائیں (اعلیٰ)" },
+  "ideal gas law": { name: "مثالی گیس کا قانون" },
+  "boyle's law": { name: "بوائل کا قانون" },
+  "charles's law": { name: "چارلس کا قانون" },
+  "phase change": { name: "حالتی تبدیلی" },
+  "phase diagram of water": { name: "پانی کا حالتی خاکہ" },
+  "hydrogen bonds": { name: "ہائیڈروجن بندھن" },
+  "ionic bonding": { name: "آئنی بندھن" },
+  "covalent bonding": { name: "ہم رابطہ بندھن" },
+  "le chatelier's principle": { name: "لی شاطلیے کا اصول" },
+  "chemical equilibrium": { name: "کیمیائی توازن" },
+  stoichiometry: { name: "اسٹوئیکیومیٹری" },
+  "molecular view of a gas": { name: "گیس کا سالماتی منظر" },
+  "molecular view of a solid": { name: "ٹھوس کا سالماتی منظر" },
+
+  // ── Biology ──
+  "natural selection": { name: "قدرتی انتخاب", desc: "ماحول کے مطابق خصوصیات نسل در نسل کیسے منتخب ہوتی ہیں۔" },
+  "gene expression": { name: "جین کا اظہار" },
+  "gene expression essentials": { name: "جین کے اظہار کی بنیادیات" },
+  neuron: { name: "عصبی خلیہ (نیورون)", desc: "عصبی خلیہ برقی اشارے کیسے بھیجتا ہے۔" },
+  "osmosis & tonicity": { name: "اسموسس اور ٹونیسیٹی" },
+  "food webs & trophic levels": { name: "غذائی جال اور غذائی درجے" },
+  "predator-prey cycles": { name: "شکاری اور شکار کے چکر" },
+  "population growth": { name: "آبادی میں اضافہ" },
+  "carbon cycle": { name: "کاربن کا چکر" },
+  "nitrogen cycle": { name: "نائٹروجن کا چکر" },
+  "dna to protein": { name: "ڈی این اے سے پروٹین تک" },
+  mutations: { name: "تغیرات" },
+  "gel electrophoresis": { name: "جیل الیکٹروفوریسس" },
+  "muscle contraction": { name: "پٹھوں کا سکڑاؤ" },
+
+  // ── Math ──
+  arithmetic: { name: "علم الحساب" },
+  "area builder": { name: "رقبہ بنانے والا" },
+  "build a fraction": { name: "کسر بنائیں" },
+  "fraction matcher": { name: "کسر ملاؤ" },
+  "fractions: intro": { name: "کسریں: تعارف" },
+  "graphing lines": { name: "خطوط کا گراف" },
+  "graphing quadratics": { name: "دوقدری مساوات کا گراف" },
+  "graphing slope-intercept": { name: "میلان-قطع کا گراف" },
+  "calculus grapher": { name: "کیلکولس گرافر" },
+  "curve fitting": { name: "منحنی فٹنگ" },
+  "least-squares regression": { name: "کم سے کم مربعات رجعت" },
+  "ratio and proportion": { name: "نسبت اور تناسب" },
+  "unit rates": { name: "اکائی شرحیں" },
+  "make a ten": { name: "دس بناؤ" },
+  "equality explorer": { name: "مساوات کی کھوج" },
+  "function builder": { name: "فنکشن بنانے والا" },
+  "proportion playground": { name: "تناسب کا میدان" },
+
+  // ── Earth science ──
+  "plate tectonics": { name: "ارضیاتی پلیٹیں", desc: "زمین کی پلیٹوں کی حرکت اور زلزلوں سے تعلق۔" },
+  "greenhouse effect": { name: "گرین ہاؤس اثر", desc: "ماحول کی گیسیں زمین کی حرارت کیسے روکتی ہیں۔" },
+  "seismic waves": { name: "زلزلہ لہریں" },
+  "water cycle states": { name: "پانی کے چکر کی حالتیں" },
+};
+
+/**
+ * A sim's Urdu name: explicit per-sim `urduName` wins, else the canonical
+ * concept's translation looked up by normalized base name. Returns `null` when
+ * no Urdu name is available so callers can fall back to the English name.
+ */
+export function getUrduName(sim: Simulation): string | null {
+  if (sim.urduName) return sim.urduName;
+  return URDU_BY_BASE[urduBaseKey(sim.name)]?.name ?? null;
+}
+
+/** A sim's Urdu description, if one is available (override or curated). */
+export function getUrduDescription(sim: Simulation): string | null {
+  if (sim.urduDescription) return sim.urduDescription;
+  return URDU_BY_BASE[urduBaseKey(sim.name)]?.desc ?? null;
+}
+
+// ---------------------------------------------------------------------------
 // Helper utilities
 // ---------------------------------------------------------------------------
 
