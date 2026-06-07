@@ -6,14 +6,14 @@
 
 **مدار — Interactive STEM Physics**
 
-A fast, lightweight STEM simulation browser with **429 embedded simulations** across Physics, Chemistry, Biology, Mathematics, Earth Science & Engineering — all in one app.
+A fast, lightweight STEM simulation browser with **585 embedded simulations** across Physics, Chemistry, Biology, Mathematics, Earth Science & Engineering — all in one app. Built for students in Pakistan, on Android, desktop, and the web.
 
 [![All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](#license)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%20v2-orange.svg)](https://tauri.app)
 [![Svelte 5](https://img.shields.io/badge/frontend-Svelte%205-red.svg)](https://svelte.dev)
 [![Made in Skardu](https://img.shields.io/badge/made%20in-Skardu,%20Pakistan%20🇵🇰-green.svg)](#about)
 
-[Web App](https://hasnain7abbas.github.io/Madar/) / [Desktop App](https://github.com/hasnain7abbas/Madar/releases) / [Source Code](https://github.com/hasnain7abbas/Madar)
+[Web App](https://hasnain7abbas.github.io/Madar/) / [Android & Desktop](https://github.com/hasnain7abbas/Madar/releases) / [Source Code](https://github.com/hasnain7abbas/Madar)
 
 </div>
 
@@ -38,17 +38,19 @@ A fast, lightweight STEM simulation browser with **429 embedded simulations** ac
 
 ## Features
 
-- **429 interactive simulations** from PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos & more
-- **6 subject categories**: Physics (81), Chemistry (104), Biology (102), Math (43), Earth Science (17), Engineering (12)
+- **585 interactive simulations** from PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos, Concord Consortium, LabXchange & more
+- **6 subject categories**: Biology (195), Chemistry (166), Physics (134), Math (57), Earth Science (19), Engineering (14)
 - **Play simulations inside the app** — no need to open a browser
 - **Search & filter** by category, source, grade level, or keywords
 - **Favorites system** — save simulations you love
-- **Fully responsive** — works on desktop, tablet, and phone
+- **Android-optimized** — full-screen safe-area layout, touch-tuned controls, sideloadable `.apk`
+- **Pakistan grade bands** — پرائمری / مڈل / میٹرک / انٹر, with FBISE/PCTB topic tags
+- **Urdu support** — category labels, Urdu names for the most-used sims, and a PhET اردو language toggle
+- **Fully responsive** — works on phone, tablet, and desktop
 - **Offline desktop app** via Tauri v2 (Windows / Mac / Linux)
 - **Web version** works on any device with a browser
-- **Lightweight** — under 55KB gzipped, runs on low-end hardware
-- **Dark theme** with the Madar orbital design language
-- **Urdu category labels** — مدار is built for Pakistani students
+- **Lightweight** — ~95 KB gzipped frontend, runs on low-end hardware
+- **Dark & light themes** with the Madar orbital design language
 - **Proprietary** — All rights reserved by Hasnain Abbas
 
 ## Who Is Madar For?
@@ -65,9 +67,13 @@ A fast, lightweight STEM simulation browser with **429 embedded simulations** ac
 
 Works on phones, tablets, and computers. Just open and start exploring.
 
-### Option B: Desktop App
+### Option B: Android App
 
-Download the latest installer from [Releases](https://github.com/hasnain7abbas/Madar/releases), or build from source:
+Download the latest `.apk` from [Releases](https://github.com/hasnain7abbas/Madar/releases), enable **"Install from unknown sources"**, and open it. Built for low-end Android phones.
+
+### Option C: Desktop App
+
+Download the latest installer (`.exe` / `.msi` / `.dmg` / `.deb`) from [Releases](https://github.com/hasnain7abbas/Madar/releases), or build from source:
 
 ```bash
 git clone https://github.com/hasnain7abbas/Madar.git
@@ -79,33 +85,41 @@ npm run tauri dev
 ### Build the Installer
 
 ```bash
-npm run tauri build
+npm run tauri build            # desktop installer (.exe / .msi / .dmg / .deb)
+npm run tauri android init     # one-time Android project scaffold
+npm run tauri android build    # Android .apk / .aab
 ```
 
-Find your installer at: `src-tauri/target/release/bundle/`
+Find desktop installers at `src-tauri/target/release/bundle/` and Android packages at `src-tauri/gen/android/app/build/outputs/`.
+
+> Installers and the Android APK are also built automatically on every `v*` tag by GitHub Actions (`.github/workflows/release.yml` + `android.yml`).
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Svelte 5, TypeScript, Vite |
-| Desktop | Tauri v2 (Rust) |
+| Desktop | Tauri v2 (Rust) — Windows / macOS / Linux |
+| Mobile | Tauri v2 (Rust) — Android `.apk` |
 | Hosting | GitHub Pages |
-| Simulations | PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos |
+| CI/CD | GitHub Actions — Pages deploy, desktop release, Android APK |
+| Simulations | PhET, Falstad, Chrome Music Lab, Nicky Case, myPhysicsLab, oPhysics, GeoGebra, Desmos, Concord, LabXchange |
 
 ## Simulation Sources
 
 | Source | Count | Description |
 |--------|-------|-------------|
-| **PhET** | 163 | University of Colorado's interactive HTML5 simulations |
+| **PhET** | 376 | University of Colorado's interactive HTML5 simulations (CC BY) |
+| **Other** | 86 | Stellarium Web, Ray Optics, Mathigon Polypad, MolView, 3Dmol.js & more |
 | **Falstad** | 38 | Paul Falstad's HTML5 physics & math applets (GPL-2.0) |
+| **oPhysics** | 17 | Clean interactive physics visualizations |
+| **Concord** | 16 | Concord Consortium inline interactives (gas laws, diffusion, DNA→protein) |
 | **Chrome Music Lab** | 13 | Google's interactive music/sound experiments (Apache 2.0) |
-| **Nicky Case** | 7 | Game-like explorable explanations (CC0 / Public Domain) |
 | **myPhysicsLab** | 12 | Real-time physics simulations with configurable parameters |
-| **oPhysics** | 11 | Clean interactive physics visualizations |
-| **GeoGebra** | 6 | Dynamic math tools — graphing, geometry, 3D, CAS |
-| **Desmos** | 3 | Beautiful graphing and scientific calculators |
-| **Other** | 10+ | Stellarium Web, Ray Optics, Mathigon Polypad, MolView & more |
+| **GeoGebra** | 8 | Dynamic math tools — graphing, geometry, 3D, CAS |
+| **LabXchange** | 8 | Harvard biology labs (PCR, gel electrophoresis) — open in new tab |
+| **Nicky Case** | 7 | Game-like explorable explanations (CC0 / Public Domain) |
+| **Desmos** | 4 | Beautiful graphing and scientific calculators |
 
 ## Project Structure
 
@@ -118,28 +132,30 @@ madar/
 │   │   ├── SimCard.svelte        # Simulation card component
 │   │   ├── SimPlayer.svelte      # Embedded iframe player
 │   │   ├── SearchBar.svelte      # Search input
-│   │   ├── simulations.ts        # 429 simulation entries
+│   │   ├── simulations.ts        # 585 simulation entries + grade/board/Urdu helpers
 │   │   └── types.ts              # TypeScript types
-│   └── app.css                   # Global styles & dark theme
-├── src-tauri/                    # Tauri/Rust backend (desktop)
-│   └── src/lib.rs                # Lightweight favorites storage
+│   └── app.css                   # Global styles, themes, mobile safe-area
+├── src-tauri/                    # Tauri/Rust backend (desktop + Android)
+│   └── src/lib.rs                # Favorites storage + mobile entry point
 ├── public/                       # Static assets
-└── .github/workflows/            # GitHub Pages auto-deploy
+└── .github/workflows/            # Pages deploy, desktop release (.exe/.msi/.dmg/.deb), Android APK
 ```
 
 ## Roadmap
 
-- [x] 429 embedded STEM simulations
+- [x] 585 embedded STEM simulations
 - [x] Search, filter, and favorites
 - [x] Responsive mobile layout with drawer navigation
 - [x] Desktop app via Tauri v2
 - [x] Web app via GitHub Pages
-- [x] Urdu labels for Pakistani students
+- [x] Urdu category labels for Pakistani students
+- [x] Pakistan grade bands + FBISE/PCTB topic tags
+- [x] Urdu names for the most-used sims + PhET اردو toggle
+- [x] **Android APK via Tauri mobile** (full-screen optimized)
+- [ ] Urdu descriptions for all simulations
 - [ ] Offline simulation caching
 - [ ] Classroom mode (teacher-controlled presets)
 - [ ] Student progress tracking
-- [ ] Urdu translations for simulation descriptions
-- [ ] Android APK via Tauri mobile
 
 ## About
 
