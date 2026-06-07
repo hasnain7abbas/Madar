@@ -1,0 +1,94 @@
+name: Build Android APK
+
+# Builds the Android .apk on GitHub's runners (the Tauri Android toolchain —
+# JDK + Android SDK/NDK + Rust cross-targets — is too heavy to build locally).
+# Triggers on the same v* tags as the desktop release so every artifact lands
+# on one GitHub Release, plus manual dispatch for ad-hoc APK builds.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK
+        run: |
+          sdkmanager "ndk;26.1.10909125" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125" >> "$GITHUB_ENV"
+
+      - name: Install Rust + Android targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Initialize Android project
+        run: npm run tauri android init
+
+      - name: Build APK (debug-signed, installable via sideload)
+        # Debug build is signed with the standard Android debug key, so the APK
+        # installs directly ("install from unknown sources") with no keystore
+        # secrets to manage. For Play Store / stable upgrade signing, add a
+        # release keystore secret and switch to `--apk` (release) later.
+        run: npm run tauri android build -- --apk --debug
+
+      - name: Collect and rename APK
+        id: apk
+        run: |
+          VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
+          mkdir -p out
+          # Path varies by template/abi split — grab whatever APKs were produced.
+          find src-tauri/gen/android -name "*.apk" -path "*outputs*" -print
+          i=0
+          for f in $(find src-tauri/gen/android -name "*.apk" -path "*outputs*"); do
+            cp "$f" "out/Madar_${VERSION}_android$([ $i -gt 0 ] && echo "_$i").apk"
+            i=$((i+1))
+          done
+          ls -la out
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Madar-${{ steps.apk.outputs.version }}-android-apk
+          path: out/*.apk
+          if-no-files-found: error
+
+      - name: Attach APK to the GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: out/*.apk
+          fail_on_unmatched_files: true
