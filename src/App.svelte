@@ -669,11 +669,17 @@
       gap: 8px;
       background: var(--color-bg);
       padding-top: max(10px, env(safe-area-inset-top));
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
     }
 
     .sim-grid-container {
       padding: 8px 14px 0;
-      padding-bottom: 80px;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+      /* Clear the fixed bottom bar AND the device gesture inset so the last
+         row is never hidden on full-screen Android. */
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
     .sim-grid {
@@ -733,6 +739,8 @@
       border-top: 1px solid var(--color-border);
       padding: 6px 4px;
       padding-bottom: max(6px, env(safe-area-inset-bottom));
+      padding-left: max(4px, env(safe-area-inset-left));
+      padding-right: max(4px, env(safe-area-inset-right));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }

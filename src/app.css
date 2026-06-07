@@ -94,6 +94,17 @@ input,
 textarea,
 select {
   -webkit-tap-highlight-color: transparent;
+  /* Kill the 300ms tap delay + double-tap-to-zoom on controls (Android/iOS). */
+  touch-action: manipulation;
+  /* No long-press callout / context menu on app controls. */
+  -webkit-touch-callout: none;
+}
+
+/* App-like feel on touch: controls aren't selectable, content still is. */
+button,
+[role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Allow the inputs to keep their own tap behavior on iOS */
