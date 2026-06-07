@@ -3,11 +3,16 @@ name: Build Android APK
 # Builds the Android .apk on GitHub's runners (the Tauri Android toolchain —
 # JDK + Android SDK/NDK + Rust cross-targets — is too heavy to build locally).
 # Triggers on the same v* tags as the desktop release so every artifact lands
-# on one GitHub Release, plus manual dispatch for ad-hoc APK builds.
+# on one GitHub Release, plus manual dispatch for ad-hoc / re-attach builds.
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Existing release tag to attach the APKs to (e.g. v1.3.0). Blank = artifact only."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -40,10 +45,12 @@ jobs:
           echo "NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> "$GITHUB_ENV"
           echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125" >> "$GITHUB_ENV"
 
+      # Only the two ABIs real phones use — skips x86/x86_64 (emulator-only),
+      # which roughly halves build time and dropped artifacts.
       - name: Install Rust + Android targets
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+          targets: aarch64-linux-android,armv7-linux-androideabi
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -56,39 +63,53 @@ jobs:
       - name: Initialize Android project
         run: npm run tauri android init
 
-      - name: Build APK (debug-signed, installable via sideload)
-        # Debug build is signed with the standard Android debug key, so the APK
-        # installs directly ("install from unknown sources") with no keystore
-        # secrets to manage. For Play Store / stable upgrade signing, add a
-        # release keystore secret and switch to `--apk` (release) later.
-        run: npm run tauri android build -- --apk --debug
+      # Release build → applies the strip + LTO + opt-level="s" profile from
+      # Cargo.toml; split-per-abi → one lean APK per architecture instead of a
+      # fat universal one. Release APKs come out unsigned (signed below).
+      - name: Build release APKs (per-ABI)
+        run: npm run tauri android build -- --apk --split-per-abi
 
-      - name: Collect and rename APK
+      # Self-signed with an ephemeral key so the APK installs via sideload with
+      # no committed secrets. NOTE: a fresh key each run means a new build can't
+      # upgrade-install over an older one — for stable updates / Play Store, add
+      # a persistent keystore as a repo secret and sign with that instead.
+      - name: Sign and align APKs
         id: apk
         run: |
+          set -euo pipefail
           VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
+          BT="$ANDROID_HOME/build-tools/34.0.0"
+          KS="$RUNNER_TEMP/madar.keystore"
+          keytool -genkeypair -v -keystore "$KS" -alias madar \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass madar123 -keypass madar123 \
+            -dname "CN=Madar, O=Madar, C=PK"
           mkdir -p out
-          # Path varies by template/abi split — grab whatever APKs were produced.
-          find src-tauri/gen/android -name "*.apk" -path "*outputs*" -print
-          i=0
-          for f in $(find src-tauri/gen/android -name "*.apk" -path "*outputs*"); do
-            cp "$f" "out/Madar_${VERSION}_android$([ $i -gt 0 ] && echo "_$i").apk"
-            i=$((i+1))
+          echo "APKs produced by the build:"
+          find src-tauri/gen/android -name "*-release-unsigned.apk" -print
+          for f in $(find src-tauri/gen/android -name "*-release-unsigned.apk"); do
+            abi=$(basename "$f" | sed -E 's/.*-(arm64-v8a|armeabi-v7a|x86_64|x86)-release-unsigned\.apk/\1/')
+            "$BT/zipalign" -f 4 "$f" aligned.apk
+            "$BT/apksigner" sign --ks "$KS" \
+              --ks-pass pass:madar123 --key-pass pass:madar123 \
+              --out "out/Madar_${VERSION}_android_${abi}.apk" aligned.apk
+            rm -f aligned.apk
           done
+          echo "Signed APKs:"
           ls -la out
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Upload APK as build artifact
+      - name: Upload APKs as build artifact
         uses: actions/upload-artifact@v4
         with:
           name: Madar-${{ steps.apk.outputs.version }}-android-apk
           path: out/*.apk
           if-no-files-found: error
 
-      - name: Attach APK to the GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Attach APKs to the GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.release_tag != ''
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
           files: out/*.apk
           fail_on_unmatched_files: true
