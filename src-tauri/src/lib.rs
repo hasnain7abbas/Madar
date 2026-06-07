@@ -33,6 +33,7 @@ fn remove_favorite(id: String, state: State<AppState>) {
     favs.retain(|f| f != &id);
 }
 
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .manage(AppState::default())
