@@ -69,21 +69,34 @@ jobs:
       - name: Build release APKs (per-ABI)
         run: npm run tauri android build -- --apk --split-per-abi
 
-      # Self-signed with an ephemeral key so the APK installs via sideload with
-      # no committed secrets. NOTE: a fresh key each run means a new build can't
-      # upgrade-install over an older one — for stable updates / Play Store, add
-      # a persistent keystore as a repo secret and sign with that instead.
+      # Sign with the persistent release keystore from repo secrets so every
+      # build shares one signing identity and users can upgrade-install over
+      # previous versions. If the secret is absent (e.g. a fork), fall back to
+      # an ephemeral key so the workflow still produces a sideloadable APK.
       - name: Sign and align APKs
         id: apk
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
           VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
           BT="$ANDROID_HOME/build-tools/34.0.0"
           KS="$RUNNER_TEMP/madar.keystore"
-          keytool -genkeypair -v -keystore "$KS" -alias madar \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass madar123 -keypass madar123 \
-            -dname "CN=Madar, O=Madar, C=PK"
+          if [ -n "${KEYSTORE_B64:-}" ]; then
+            echo "Signing with the persistent release keystore (repo secret)."
+            echo "$KEYSTORE_B64" | base64 -d > "$KS"
+            STOREPASS="$KEYSTORE_PASSWORD"; KEYPASS="$KEY_PASSWORD"; ALIAS="$KEY_ALIAS"
+          else
+            echo "No keystore secret — falling back to an ephemeral key (sideload-only, non-upgradeable)."
+            STOREPASS="madar123"; KEYPASS="madar123"; ALIAS="madar"
+            keytool -genkeypair -v -keystore "$KS" -alias "$ALIAS" \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$STOREPASS" -keypass "$KEYPASS" \
+              -dname "CN=Madar, O=Madar, C=PK"
+          fi
           mkdir -p out
           echo "APKs produced by the build:"
           find src-tauri/gen/android -name "*-release-unsigned.apk" -print
@@ -97,13 +110,14 @@ jobs:
               *) echo "skip non-ARM ABI: $base"; continue ;;
             esac
             "$BT/zipalign" -f 4 "$f" aligned.apk
-            "$BT/apksigner" sign --ks "$KS" \
-              --ks-pass pass:madar123 --key-pass pass:madar123 \
+            "$BT/apksigner" sign --ks "$KS" --ks-key-alias "$ALIAS" \
+              --ks-pass pass:"$STOREPASS" --key-pass pass:"$KEYPASS" \
               --out "out/Madar_${VERSION}_android_${abi}.apk" aligned.apk
             rm -f aligned.apk
           done
           echo "Signed APKs:"
           ls -la out
+          for a in out/*.apk; do "$BT/apksigner" verify --print-certs "$a" | grep -i "SHA-256" | head -1; done
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Upload APKs as build artifact
